@@ -8,13 +8,34 @@ NODE_LIST = []
 SELECTED_NODE = None
 
 class Node:
-    def __init__(self, display_name: str, x: int, y: int, width: int, height: int, bg_color: tuple = (0, 0, 0), line_width: int = 0, border_radius: int = 5):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.bg_color = bg_color
-        self.line_width = line_width
-        self.border_radius = border_radius
+    def __init__(self, display_name: str):
+        self.rect = None
+        self.bg_color = (128, 128, 128)
+        self.fg_color = (0, 0, 0)
+        self.line_width = 0
+        self.border_radius = 5
         self.display_name = display_name
         self.mouse_offset = None
+
+    def set_rect(self, xywh: tuple):
+        self.rect = pygame.Rect(xywh[0], xywh[1], xywh[2], xywh[3])
+        return self
+
+    def set_bg(self, color: tuple):
+        self.bg_color = color
+        return self
+
+    def set_fg(self, color: tuple):
+        self.fg_color = color
+        return self
+
+    def set_line_width(self, width: int):
+        self.line_width = width
+        return self
+
+    def set_border_radius(self, radius: int):
+        self.border_radius = radius
+        return self
 
     def attach_to_mouse(self):
         if self.mouse_offset:
@@ -58,7 +79,7 @@ def find_selected_node():
     for i in range(len(NODE_LIST)):
         if NODE_LIST[i].rect.collidepoint(pygame.mouse.get_pos()):
             potential_nodes[i] = NODE_LIST[i]
-    if sorted_nodes:
+    if potential_nodes:
         sorted_nodes = [v for k, v in sorted(potential_nodes.items(), key=lambda item: item[0], reverse=True)]
     if not SELECTED_NODE:
         SELECTED_NODE = sorted_nodes[0]

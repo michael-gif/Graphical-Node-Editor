@@ -7,8 +7,14 @@ screen = pygame.display.set_mode((800, 800))
 na.init(screen)
 clock = pygame.time.Clock()
 
-na.create_node(na.Node("Image Texture", 100, 100, 250, 500, (255, 0, 0)))
-na.create_node(na.Node("Dilate/Erode", 300, 100, 250, 500, (0, 255, 255)))
+na.create_node(na.Node("Image Texture")
+               .set_rect((100, 100, 250, 500))
+               .set_bg((255, 0, 0))
+               )
+na.create_node(na.Node("Dilate/Erode")
+               .set_rect((300, 100, 250, 500))
+               .set_bg((0, 255, 0))
+               )
 
 running = True
 while running:
