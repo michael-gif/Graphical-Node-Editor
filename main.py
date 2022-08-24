@@ -9,7 +9,7 @@ clock = pygame.time.Clock()
 
 na.create_node(na.Node("Image Texture")
                .set_xy((100, 100))
-               .set_bg((255, 0, 0))
+               .set_bg((52, 52, 52))
                .add_input("input 1")
                .add_input("input 2")
                .add_output("output 1")
@@ -17,7 +17,7 @@ na.create_node(na.Node("Image Texture")
                )
 na.create_node(na.Node("Dilate/Erode")
                .set_xy((100, 100))
-               .set_bg((0, 255, 0))
+               .set_bg((52, 52, 52))
                .add_input("input 1")
                .add_input("input 2")
                .add_output("output 1")
@@ -30,7 +30,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((255, 255, 255))
+    screen.fill((34, 34, 34))
 
     mouse = pygame.mouse.get_pressed()
     na.update(mouse)

@@ -15,10 +15,11 @@ class Node:
         self.xy = None
         self.custom_wh = None
         self.bg_color = (128, 128, 128)
-        self.fg_color = (0, 0, 0)
+        self.fg_color = (228, 228, 228)
         self.line_width = 0
         self.border_radius = 5
         self.display_name = display_name
+        self.header_color = (129, 52, 75)
 
         self.mouse_offset = None
         self.inputs = []
@@ -31,10 +32,6 @@ class Node:
 
     def set_wh(self, wh: tuple):
         self.custom_wh = wh
-        return self
-
-    def set_rect(self, xywh: tuple):
-        self.rect = pygame.Rect(xywh[0], xywh[1], xywh[2], xywh[3])
         return self
 
     def set_bg(self, color: tuple):
@@ -53,7 +50,11 @@ class Node:
         self.border_radius = radius
         return self
 
-    def add_input(self, name: str, color: tuple = (100, 100, 100)):
+    def set_header_color(self, color: tuple):
+        self.header_color = color
+        return self
+
+    def add_input(self, name: str, color: tuple = (159, 159, 159)):
         self.inputs.append((name, color))
         if len(self.inputs) > len(self.outputs):
             self.rect.height += 50
@@ -65,7 +66,7 @@ class Node:
         self.inputs.pop(index)
         return self
 
-    def add_output(self, name: str, color: tuple = (100, 100, 100)):
+    def add_output(self, name: str, color: tuple = (159, 159, 159)):
         self.outputs.append((name, color))
         if len(self.outputs) > len(self.inputs):
             self.rect.height += 50
@@ -104,15 +105,22 @@ class Node:
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
 
         render_rect.width = node_header_font.size(self.display_name)[0] + 20
+        # background rectangle
         pygame.draw.rect(PYGAME_SCREEN, self.bg_color, render_rect, self.line_width, self.border_radius)
-        display_text_surface = node_header_font.render(self.display_name, False, self.fg_color)
+        # header rectangle
+        pygame.draw.rect(PYGAME_SCREEN, self.header_color,
+                         (render_rect.x, render_rect.y, render_rect.width, 50), 0, 0, self.border_radius,
+                         self.border_radius, 0, 0)
+        # outline rectangle
+        #pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2, self.border_radius)
+        display_text_surface = node_header_font.render(self.display_name, True, self.fg_color)
         PYGAME_SCREEN.blit(display_text_surface, (render_rect[0] + 10, render_rect[1] + 10))
 
         for i in range(len(self.inputs)):
             input_connection = self.inputs[i]
             pygame.draw.circle(PYGAME_SCREEN, input_connection[1], (render_rect.x, render_rect.y + 50 + 25 + (50 * i)),
                                5)
-            PYGAME_SCREEN.blit(node_connection_name_font.render(input_connection[0], False, self.fg_color),
+            PYGAME_SCREEN.blit(node_connection_name_font.render(input_connection[0], True, self.fg_color),
                                (render_rect.x + 10, render_rect.y + 50 + 15 + (50 * i)))
 
         for i in range(len(self.outputs)):
@@ -120,7 +128,7 @@ class Node:
             pygame.draw.circle(PYGAME_SCREEN, output_connection[1],
                                (render_rect.x + render_rect.width, render_rect.y + 50 + 25 + (50 * i)), 5)
             output_length = node_connection_name_font.size(output_connection[0])[0]
-            PYGAME_SCREEN.blit(node_connection_name_font.render(output_connection[0], False, self.fg_color), (render_rect.x + render_rect.width - output_length - 10, render_rect.y + 50 + 15 + (50 * i)))
+            PYGAME_SCREEN.blit(node_connection_name_font.render(output_connection[0], True, self.fg_color), (render_rect.x + render_rect.width - output_length - 10, render_rect.y + 50 + 15 + (50 * i)))
 
 
 def init(screen):
