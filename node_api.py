@@ -1,12 +1,13 @@
 import pygame
 
 pygame.font.init()
-node_header_font = pygame.font.SysFont("Consolas", 30)
-node_connection_name_font = pygame.font.SysFont("Consolas", 20)
+node_header_font = pygame.font.SysFont("Calibri", 20)
+node_connection_name_font = pygame.font.SysFont("Calibri", 20)
 
 PYGAME_SCREEN = None
 NODE_LIST = []
 SELECTED_NODE = None
+MOUSE_DOWN = False
 
 
 class Node:
@@ -20,6 +21,7 @@ class Node:
         self.border_radius = 5
         self.display_name = display_name
         self.header_color = (129, 52, 75)
+        self.header_height = node_header_font.size(display_name)[1]
 
         self.mouse_offset = None
         self.inputs = []
@@ -105,14 +107,17 @@ class Node:
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
 
         render_rect.width = node_header_font.size(self.display_name)[0] + 20
+        if render_rect.width < 200:
+            render_rect.width = 200
         # background rectangle
         pygame.draw.rect(PYGAME_SCREEN, self.bg_color, render_rect, self.line_width, self.border_radius)
         # header rectangle
         pygame.draw.rect(PYGAME_SCREEN, self.header_color,
-                         (render_rect.x, render_rect.y, render_rect.width, 50), 0, 0, self.border_radius,
-                         self.border_radius, 0, 0)
+                         (render_rect.x, render_rect.y, render_rect.width, 20 + self.header_height), 0, 0,
+                         self.border_radius, self.border_radius, 0, 0)
         # outline rectangle
-        #pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2, self.border_radius)
+        pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2, self.border_radius)
+
         display_text_surface = node_header_font.render(self.display_name, True, self.fg_color)
         PYGAME_SCREEN.blit(display_text_surface, (render_rect[0] + 10, render_rect[1] + 10))
 
@@ -128,7 +133,8 @@ class Node:
             pygame.draw.circle(PYGAME_SCREEN, output_connection[1],
                                (render_rect.x + render_rect.width, render_rect.y + 50 + 25 + (50 * i)), 5)
             output_length = node_connection_name_font.size(output_connection[0])[0]
-            PYGAME_SCREEN.blit(node_connection_name_font.render(output_connection[0], True, self.fg_color), (render_rect.x + render_rect.width - output_length - 10, render_rect.y + 50 + 15 + (50 * i)))
+            PYGAME_SCREEN.blit(node_connection_name_font.render(output_connection[0], True, self.fg_color), (
+                render_rect.x + render_rect.width - output_length - 10, render_rect.y + 50 + 15 + (50 * i)))
 
 
 def init(screen):
@@ -158,12 +164,15 @@ def find_selected_node():
 
 
 def update(mouse: tuple):
-    global SELECTED_NODE
+    global SELECTED_NODE, MOUSE_DOWN
     if mouse[0]:
-        find_selected_node()
-        if SELECTED_NODE:
-            SELECTED_NODE.attach_to_mouse()
+        if not MOUSE_DOWN:
+            MOUSE_DOWN = True
+            find_selected_node()
+            if SELECTED_NODE:
+                SELECTED_NODE.attach_to_mouse()
     else:
+        MOUSE_DOWN = False
         if SELECTED_NODE:
             SELECTED_NODE.detach_from_mouse()
             SELECTED_NODE = None
