@@ -113,6 +113,12 @@ class Node:
             pygame.draw.circle(PYGAME_SCREEN, input_connection[1], (render_rect.x, render_rect.y + 50 + 25 + (50 * i)), 5)
             PYGAME_SCREEN.blit(node_connection_name_font.render(input_connection[0], False, self.fg_color), (render_rect.x + 10, render_rect.y + 50 + 15 + (50 * i)))
 
+        for i in range(len(self.outputs)):
+            output_connection = self.outputs[i]
+            pygame.draw.circle(PYGAME_SCREEN, output_connection[1], (render_rect.x + render_rect.width, render_rect.y + 50 + 25 + (50 * i)), 5)
+            output_length = node_connection_name_font.size(output_connection[0])[0]
+            PYGAME_SCREEN.blit(node_connection_name_font.render(output_connection[0], False, self.fg_color), (render_rect.x + render_rect.width - output_length - 10, render_rect.y + 50 + 15 + (50 * i)))
+
 
 def init(screen):
     global PYGAME_SCREEN
@@ -133,6 +139,8 @@ def find_selected_node():
             potential_nodes[i] = NODE_LIST[i]
     if potential_nodes:
         sorted_nodes = [v for k, v in sorted(potential_nodes.items(), key=lambda item: item[0], reverse=True)]
+    else:
+        return
     if not SELECTED_NODE:
         SELECTED_NODE = sorted_nodes[0]
         SELECTED_NODE.bring_to_front()
