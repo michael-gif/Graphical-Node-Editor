@@ -110,12 +110,15 @@ class Node:
 
         for i in range(len(self.inputs)):
             input_connection = self.inputs[i]
-            pygame.draw.circle(PYGAME_SCREEN, input_connection[1], (render_rect.x, render_rect.y + 50 + 25 + (50 * i)), 5)
-            PYGAME_SCREEN.blit(node_connection_name_font.render(input_connection[0], False, self.fg_color), (render_rect.x + 10, render_rect.y + 50 + 15 + (50 * i)))
+            pygame.draw.circle(PYGAME_SCREEN, input_connection[1], (render_rect.x, render_rect.y + 50 + 25 + (50 * i)),
+                               5)
+            PYGAME_SCREEN.blit(node_connection_name_font.render(input_connection[0], False, self.fg_color),
+                               (render_rect.x + 10, render_rect.y + 50 + 15 + (50 * i)))
 
         for i in range(len(self.outputs)):
             output_connection = self.outputs[i]
-            pygame.draw.circle(PYGAME_SCREEN, output_connection[1], (render_rect.x + render_rect.width, render_rect.y + 50 + 25 + (50 * i)), 5)
+            pygame.draw.circle(PYGAME_SCREEN, output_connection[1],
+                               (render_rect.x + render_rect.width, render_rect.y + 50 + 25 + (50 * i)), 5)
             output_length = node_connection_name_font.size(output_connection[0])[0]
             PYGAME_SCREEN.blit(node_connection_name_font.render(output_connection[0], False, self.fg_color), (render_rect.x + render_rect.width - output_length - 10, render_rect.y + 50 + 15 + (50 * i)))
 
