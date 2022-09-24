@@ -1,11 +1,27 @@
+import os
 import pygame
+import tkinter as tk
+import ctypes
 import node_api as na
 
-pygame.init()
+from threading import Thread
 
-screen = pygame.display.set_mode((800, 800))
+user32 = ctypes.windll.user32
+display_res = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+
+root = tk.Tk()
+root.state('zoomed')
+pygame_embed = tk.Frame(root, width=display_res[0], height=display_res[1])
+pygame_embed.pack()
+
+# embed pygame window
+os.environ['SDL_WINDOWID'] = str(pygame_embed.winfo_id())
+os.environ['SDL_VIDEODRIVER'] = 'windib'
+
+screen = pygame.display.set_mode(display_res)
+pygame.display.init()
+pygame.display.update()
 na.init(screen)
-clock = pygame.time.Clock()
 
 na.create_node(na.Node("Image Texture")
                .set_xy((100, 100))
@@ -27,17 +43,23 @@ na.create_node(na.Node("ATC")
                .add_output("")
                )
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
 
-    screen.fill((34, 34, 34))
+def pygame_loop():
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    mouse = pygame.mouse.get_pressed()
-    na.update(mouse)
-    na.render_all()
-    pygame.display.update()
+        screen.fill((34, 34, 34))
 
-pygame.quit()
+        mouse = pygame.mouse.get_pressed()
+        na.update(mouse)
+        na.render_all()
+        pygame.display.update()
+    pygame.quit()
+
+
+pygame_thread = Thread(target=pygame_loop, daemon=True)
+pygame_thread.start()
+root.mainloop()

@@ -192,13 +192,13 @@ class Node:
         if render_rect.width < 100:
             render_rect.width = 100
         # background rectangle
-        pygame.draw.rect(PYGAME_SCREEN, self.bg_color, render_rect, self.line_width, self.border_radius)
+        pygame.draw.rect(PYGAME_SCREEN, self.bg_color, render_rect, self.line_width)#, self.border_radius)
         # header rectangle
         pygame.draw.rect(PYGAME_SCREEN, self.header_color,
-                         (render_rect.x, render_rect.y, render_rect.width, self.header_height), 0, 0,
-                         self.border_radius, self.border_radius, 0, 0)
+                         (render_rect.x, render_rect.y, render_rect.width, self.header_height), 0)#, 0,
+                         #self.border_radius, self.border_radius, 0, 0)
         # outline rectangle
-        pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2, self.border_radius)
+        pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2)#, self.border_radius)
 
         # display name
         display_text_surface = node_header_font.render(self.display_name, True, self.fg_color)
