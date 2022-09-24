@@ -218,7 +218,7 @@ class App(tk.Tk):
                         }
                     })
                 output['connections'] = output_connections
-                f.write(json.dumps(output))
+                f.write(json.dumps(output, indent=4))
 
     def export(self):
         export_window = tk.Toplevel(self)
@@ -238,6 +238,11 @@ class App(tk.Tk):
                                                filetypes=[
                                                    (f'{selected_format.get().upper()}', f'.{selected_format.get()}')])
             export_window.lift()
+            destination_entry.insert(0, self.save_path)
+
+        def compile():
+            self.export_to_file(selected_format.get())
+            export_window.destroy()
 
         content = tk.Frame(export_window, relief='sunken')
         content.place(x=10, y=10, width=250, height=175)
@@ -257,7 +262,7 @@ class App(tk.Tk):
         json_type.place(x=0, y=80)
         ini_type = tk.Radiobutton(content, text='INI', value='ini', variable=selected_format)
         ini_type.place(x=0, y=105)
-        export_button = tk.Button(content, text='Export', command=lambda: self.export_to_file(selected_format.get()))
+        export_button = tk.Button(content, text='Export', command=compile)
         export_button.place(x=0, y=135, width=250, height=40)
 
 
