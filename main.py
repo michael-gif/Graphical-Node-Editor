@@ -89,8 +89,15 @@ def create_new_node():
             selected_output.delete(0, tk.END)
             outputs_listbox.select_set(selection[0])
 
+    def create_node():
+        new_node = na.Node(name_entry.get()).set_desciption(description_entry.get())
+        for inpt in inputs_listbox.get(1, tk.END):
+            new_node.add_input(str(inpt))
+        for otpt in outputs_listbox.get(1, tk.END):
+            new_node.add_output(str(otpt))
+        na.create_node(new_node)
+
     svar = tk.StringVar()
-    #svar.trace('w', input_edit)
 
     inputs_label = tk.Label(content, text="Inputs")
     inputs_label.place(x=0, y=75, width=170, height=25)
@@ -117,7 +124,7 @@ def create_new_node():
     remove_output_button = tk.Button(content, text="-", command=remove_outputs)
     remove_output_button.place(x=325, y=270, width=25, height=25)
 
-    create_node_button = tk.Button(content, text="Create Node")
+    create_node_button = tk.Button(content, text="Create Node", command=create_node)
     create_node_button.place(x=0, y=310, width=350, height=40)
 
     inputs_listbox.insert(0, '')
