@@ -109,8 +109,12 @@ class App(tk.Tk):
     def build_node(self):
         new_node = na.Node(self.name_entry.get()).set_desciption(self.description_entry.get())
         for inpt in self.inputs_listbox.get(1, tk.END):
+            if str(inpt) == '<empty>':
+                inpt = ''
             new_node.add_input(str(inpt))
         for otpt in self.outputs_listbox.get(1, tk.END):
+            if str(otpt) == '<empty>':
+                otpt = ''
             new_node.add_output(str(otpt))
         na.create_node(new_node)
 
