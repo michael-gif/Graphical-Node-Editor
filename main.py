@@ -5,6 +5,7 @@ import node_api as na
 import string
 
 from threading import Thread
+from tkinter.filedialog import asksaveasfilename
 
 root = tk.Tk()
 root.title("Node Editor")
@@ -106,7 +107,7 @@ def create_new_node():
             selected_output.delete(0, tk.END)
             outputs_listbox.select_set(selection[0])
 
-    def create_node():
+    def build_node():
         new_node = na.Node(name_entry.get()).set_desciption(description_entry.get())
         for inpt in inputs_listbox.get(1, tk.END):
             new_node.add_input(str(inpt))
@@ -141,19 +142,59 @@ def create_new_node():
     remove_output_button = tk.Button(content, text="-", command=remove_outputs)
     remove_output_button.place(x=325, y=270, width=25, height=25)
 
-    create_node_button = tk.Button(content, text="Create Node", command=create_node)
+    create_node_button = tk.Button(content, text="Create Node", command=build_node)
     create_node_button.place(x=0, y=310, width=350, height=40)
 
     inputs_listbox.insert(0, '')
     outputs_listbox.insert(0, '')
 
 
+def export():
+    export_window = tk.Toplevel(root)
+    export_window.title("Export")
+    w, h = 270, 195
+    ws = root.winfo_screenwidth()
+    hs = root.winfo_screenheight()
+    x = (ws / 2) - (w / 2)
+    y = (hs / 2) - (h / 2)
+    export_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
+    selected_format = tk.StringVar(value='json')
+
+    def browse():
+        print(selected_format.get())
+        f = asksaveasfilename(initialfile=f"untitled.{selected_format.get()}",
+                              defaultextension=f'.{selected_format.get()}',
+                              filetypes=[(f'{selected_format.get().upper()}', f'.{selected_format.get()}')])
+
+    content = tk.Frame(export_window, relief='sunken')
+    content.place(x=10, y=10, width=250, height=175)
+    line_break = tk.Label(content, text="______________________________________________________")
+    line_break.place(x=0, y=-5, width=250)
+    destination_label = tk.Label(content, text="Destination  ")
+    destination_label.place(x=0, y=0, height=25)
+    destination_entry = tk.Entry(content)
+    destination_entry.place(x=0, y=30, width=215, height=25)
+    browse_button = tk.Button(content, text='...', command=browse)
+    browse_button.place(x=225, y=30, width=25, height=25)
+    line_break_2 = tk.Label(content, text="______________________________________________________")
+    line_break_2.place(x=0, y=55, width=250)
+    format_label = tk.Label(content, text="Export format  ")
+    format_label.place(x=0, y=60)
+    json_type = tk.Radiobutton(content, text='JSON', value='json', variable=selected_format)
+    json_type.place(x=0, y=80)
+    ini_type = tk.Radiobutton(content, text='INI', value='ini', variable=selected_format)
+    ini_type.place(x=0, y=105)
+    export_button = tk.Button(content, text='Export')
+    export_button.place(x=0, y=135, width=250, height=40)
+
+
 root.protocol("WM_DELETE_WINDOW", confirm_quit)
-menubar = tk.Menu(root)
-file_menu = tk.Menu(menubar, tearoff=False)
-menubar.add_command(label="Exit", command=confirm_quit)
-menubar.add_command(label="New Node", command=create_new_node)
-root.config(menu=menubar)
+toolbar = tk.Menu(root)
+toolbar.add_command(label="Exit", command=confirm_quit)
+toolbar.add_command(label="New Node", command=create_new_node)
+toolbar.add_command(label="Export", command=export)
+root.config(menu=toolbar)
 
 # embed pygame window
 pygame_embed = tk.Frame(root, width=root.winfo_screenwidth(), height=root.winfo_screenheight())
