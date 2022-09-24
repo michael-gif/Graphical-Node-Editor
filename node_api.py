@@ -42,6 +42,7 @@ class Node:
         self.border_radius = 5
         self.display_name = display_name
         self.description = ""
+        self.description_max_width = 100
         self.header_color = (129, 52, 75)
         self.header_height = node_header_font.size(display_name)[1] + 30
 
@@ -130,6 +131,27 @@ class Node:
     def get_io_connectors(self):
         return self.inputs + self.outputs
 
+    def split_description(self, description: str):
+        '''
+        Splits the node description into multiple lines, with each line not exceeding the max width for the description
+        :param description:
+        :return: lines
+        '''
+        lines = []
+        line = ""
+        words = [chunk + " " for chunk in description.split(" ")]
+        for word in words:
+            line_surface = node_connection_name_font.render(line, True, self.fg_color)
+            word_surface = node_connection_name_font.render(word, True, self.fg_color)
+            word_width, word_height = word_surface.get_size()
+            line_width, line_height = line_surface.get_size()
+            if line_width + word_width <= self.description_max_width:
+                line += word
+            else:
+                lines.append(line.strip())
+                line = word
+        return lines
+
     def render(self):
         render_rect = self.rect
         if self.mouse_offset:
@@ -137,7 +159,7 @@ class Node:
             render_rect.x = mouse_pos[0] - self.mouse_offset[0]
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
 
-        render_rect.width = node_header_font.size(self.display_name)[0] + 20
+        render_rect.width = node_header_font.size(self.display_name)[0] + 20 + self.description_max_width + 10
         if render_rect.width < 200:
             render_rect.width = 200
         # background rectangle
@@ -149,20 +171,35 @@ class Node:
         # outline rectangle
         pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2, self.border_radius)
 
-        # draw node display name
+        # display name
         display_text_surface = node_header_font.render(self.display_name, True, self.fg_color)
         PYGAME_SCREEN.blit(display_text_surface, (render_rect[0] + 10, render_rect[1] + 10))
+
+        # description
+        lines = self.split_description(self.description)
+        for x in range(len(lines)):
+            line_text_surface = node_connection_name_font.render(lines[x], True, self.fg_color)
+            line_size = line_text_surface.get_size()
+            line_pos = [0, 0]
+            if len(self.inputs):
+                input_size = node_connection_name_font.size(self.inputs[0].name)
+                line_pos[0] = render_rect.x + 10 + input_size[0] + 10
+                line_pos[1] = render_rect.y + self.header_height + input_size[1] + (x * input_size[1])
+            else:
+                line_pos[0] = render_rect.x + 25
+                line_pos[1] = render_rect.y + self.header_height + input_size[1] + (x * line_size[1])
+            PYGAME_SCREEN.blit(line_text_surface, line_pos)
 
         # draw all inputs
         for i in range(len(self.inputs)):
             i_connection = self.inputs[i]
-            i_connection.pos = (render_rect.x, render_rect.y + 50 + 25 + (50 * i))
+            i_connection.pos = (render_rect.x, render_rect.y + self.header_height + 25 + (50 * i))
             i_connection.render()
 
         # draw all outputs
         for i in range(len(self.outputs)):
             o_connection = self.outputs[i]
-            o_connection.pos = (render_rect.x + render_rect.width, render_rect.y + 50 + 25 + (50 * i))
+            o_connection.pos = (render_rect.x + render_rect.width, render_rect.y + self.header_height + 25 + (50 * i))
             o_connection.render()
 
 
