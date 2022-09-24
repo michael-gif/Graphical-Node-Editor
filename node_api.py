@@ -198,7 +198,10 @@ class Node:
                          (render_rect.x, render_rect.y, render_rect.width, self.header_height), 0)#, 0,
                          #self.border_radius, self.border_radius, 0, 0)
         # outline rectangle
-        pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2)#, self.border_radius)
+        if ACTIVE_NODE == self:
+            pygame.draw.rect(PYGAME_SCREEN, (217, 152, 22), render_rect, 2)  # , self.border_radius)
+        else:
+            pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2)#, self.border_radius)
 
         # display name
         display_text_surface = node_header_font.render(self.display_name, True, self.fg_color)
@@ -245,6 +248,7 @@ PYGAME_SCREEN: pygame.Surface = None
 NODE_LIST: list = []
 SELECTED_NODE: Node = None
 SELECTED_CONNECTOR: NodeConnector = None
+ACTIVE_NODE: Node = None
 CONNECTOR_PARENT: Node = None
 CONNECTION_LIST: list = []
 MOUSE_DOWN: bool = False
@@ -266,7 +270,7 @@ def generator_bezier_coords(pos1, pos2):
 
 
 def process_hitboxes():
-    global SELECTED_NODE, SELECTED_CONNECTOR, CONNECTOR_PARENT
+    global SELECTED_NODE, SELECTED_CONNECTOR, ACTIVE_NODE, CONNECTOR_PARENT
     if SELECTED_NODE:
         return
     potential_nodes = {}
@@ -281,6 +285,7 @@ def process_hitboxes():
     if potential_nodes:
         sorted_nodes = [v for k, v in sorted(potential_nodes.items(), key=lambda item: item[0], reverse=True)]
     else:
+        ACTIVE_NODE = None
         return
     if not SELECTED_NODE:
         SELECTED_NODE = sorted_nodes[0]
@@ -288,13 +293,14 @@ def process_hitboxes():
 
 
 def update(mouse: tuple):
-    global SELECTED_NODE, SELECTED_CONNECTOR, MOUSE_DOWN
+    global SELECTED_NODE, SELECTED_CONNECTOR, ACTIVE_NODE, MOUSE_DOWN
     if mouse[0]:
         if not MOUSE_DOWN:
             MOUSE_DOWN = True
             process_hitboxes()
             if SELECTED_NODE:
                 SELECTED_NODE.attach_to_mouse()
+                ACTIVE_NODE = SELECTED_NODE
     else:
         MOUSE_DOWN = False
         if SELECTED_NODE:
