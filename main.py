@@ -278,11 +278,6 @@ pygame.display.init()
 pygame.display.update()
 na.init(screen)
 
-na.create_node(na.Node("ATC")
-               .set_desciption("atc")
-               .add_output("")
-               )
-na.create_node
 
 def pygame_loop():
     running = True

@@ -321,9 +321,9 @@ def update(mouse: tuple):
 
 def render_all():
     for connection in CONNECTION_LIST:
-        gfxdraw.bezier(PYGAME_SCREEN, generator_bezier_coords(connection[2].pos, connection[3].pos), 2, (255, 255, 255))
+        gfxdraw.bezier(PYGAME_SCREEN, generator_bezier_coords(connection[2].pos, connection[3].pos), 5, (255, 255, 255))
     for node in NODE_LIST:
         node.render()
     if SELECTED_CONNECTOR:
-        gfxdraw.bezier(PYGAME_SCREEN, generator_bezier_coords(SELECTED_CONNECTOR.pos, pygame.mouse.get_pos()), 2,
+        gfxdraw.bezier(PYGAME_SCREEN, generator_bezier_coords(SELECTED_CONNECTOR.pos, pygame.mouse.get_pos()), 5,
                        (255, 255, 255))
