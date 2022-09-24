@@ -12,15 +12,33 @@ class NodeConnector:
         self.text_color = text_color
         self.type = type
         self.pos = None
+        self.name_max_width = 75
+
+    def get_max_name(self):
+        '''
+        Ensures the name will not exceed the name_max_width
+        :return: name
+        '''
+        line = ""
+        for char in self.name:
+            line_size = node_connection_name_font.size(line)
+            char_size = node_connection_name_font.size(char)
+            if char_size[0] + line_size[0] <= self.name_max_width:
+                line += char
+            else:
+                line = line[:-3]
+                line += '...'
+                break
+        return line
 
     def render(self):
         pygame.draw.circle(PYGAME_SCREEN, self.color, self.pos, 5)
         if self.type == NodeConnector.INPUT:
-            PYGAME_SCREEN.blit(node_connection_name_font.render(self.name, True, self.text_color),
+            PYGAME_SCREEN.blit(node_connection_name_font.render(self.get_max_name(), True, self.text_color),
                                (self.pos[0] + 10, self.pos[1] - 10))
         else:
-            output_length = node_connection_name_font.size(self.name)[0]
-            PYGAME_SCREEN.blit(node_connection_name_font.render(self.name, True, self.text_color),
+            output_length = node_connection_name_font.size(self.get_max_name())[0]
+            PYGAME_SCREEN.blit(node_connection_name_font.render(self.get_max_name(), True, self.text_color),
                                (self.pos[0] - output_length - 10, self.pos[1] - 10))
 
     def render_hitbox(self):
