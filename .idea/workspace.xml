@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="045db5d6-3785-4fbd-a872-686e3da62c21" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/node_api.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -69,6 +69,10 @@ class Node:
         self.inputs = []
         self.outputs = []
 
+    def set_id(self, id):
+        self.id = id
+        return self
+
     def set_xy(self, xy: tuple):
         self.xy = xy
         self.rect.x, self.rect.y = xy
@@ -98,7 +102,7 @@ class Node:
         self.header_color = color
         return self
 
-    def set_desciption(self, description: str):
+    def set_description(self, description: str):
         self.description = description
         return self
 

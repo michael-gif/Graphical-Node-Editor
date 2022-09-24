@@ -7,7 +7,7 @@ import tkinter as tk
 import node_api as na
 
 from threading import Thread
-from tkinter.filedialog import asksaveasfilename
+from tkinter.filedialog import asksaveasfilename, askopenfilename
 
 
 class App(tk.Tk):
@@ -19,6 +19,7 @@ class App(tk.Tk):
         toolbar = tk.Menu(self)
         toolbar.add_command(label="Exit", command=self.confirm_quit)
         toolbar.add_command(label="New Node", command=self.create_new_node)
+        toolbar.add_command(label="Export", command=self.import_file)
         toolbar.add_command(label="Export", command=self.export)
         self.config(menu=toolbar)
 
@@ -29,6 +30,7 @@ class App(tk.Tk):
         os.environ['SDL_VIDEODRIVER'] = 'windib'
 
         self.export_window_open = False
+        self.import_window_open = False
         self.new_node_window_open = False
 
         self.save_path = ""
@@ -42,10 +44,14 @@ class App(tk.Tk):
         self.description_entry = None
 
         self.bind('<Control-n>', self.open_new_node_window)
-        self.bind('<Control-s>', self.open_new_node_window)
+        self.bind('<Control-o>', self.open_import_window)
+        self.bind('<Control-s>', self.open_export_window)
 
     def open_new_node_window(self, event):
         self.create_new_node()
+
+    def open_import_window(self, event):
+        self.import_file()
 
     def open_export_window(self, event):
         self.export()
@@ -133,7 +139,7 @@ class App(tk.Tk):
             self.outputs_listbox.select_set(selection[0])
 
     def build_node(self):
-        new_node = na.Node(self.name_entry.get()).set_desciption(self.description_entry.get())
+        new_node = na.Node(self.name_entry.get()).set_description(self.description_entry.get())
         for inpt in self.inputs_listbox.get(1, tk.END):
             if str(inpt) == '<empty>':
                 inpt = ''
@@ -214,6 +220,26 @@ class App(tk.Tk):
 
         self.inputs_listbox.insert(0, '')
         self.outputs_listbox.insert(0, '')
+
+    def import_file(self):
+        if self.import_window_open:
+            return
+        self.import_window_open = True
+        load_path = askopenfilename(title='Open a file')
+        print(load_path)
+        with open(load_path) as f:
+            raw_json = json.load(f)
+        print(raw_json)
+        na.NODE_LIST = []
+        na.CONNECTION_LIST = []
+        for node in raw_json['nodes']:
+            na.create_node(na.Node(node['name'])
+                           .set_xy(node['xy'])
+                           .set_description(node['description'])
+                           .set_id(node['id']))
+        #for conn in raw_json['connections']:
+        #    na.CONNECTION_LIST.append((conn['start_node_id'], conn['end_node_id'], conn['start_connector']))
+
 
     def export_to_file(self, type: str):
         with open(self.save_path, 'w') as f:
