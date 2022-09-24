@@ -177,10 +177,20 @@ class Node:
             mouse_pos = pygame.mouse.get_pos()
             render_rect.x = mouse_pos[0] - self.mouse_offset[0]
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
-
-        render_rect.width = node_header_font.size(self.display_name)[0] + 20 + self.description_max_width + 50
-        if render_rect.width < 200:
-            render_rect.width = 200
+        tmp = 0
+        if self.inputs:
+            tmp += node_connection_name_font.size(self.inputs[0].name)[0] + 10
+        if self.description:
+            tmp += self.description_max_width + 50
+        else:
+            tmp += 25
+        if self.outputs:
+            tmp += node_connection_name_font.size(self.outputs[0].name)[0] + 10
+        render_rect.width = node_header_font.size(self.display_name)[0] + 20
+        if tmp > render_rect.width:
+            render_rect.width = tmp
+        if render_rect.width < 100:
+            render_rect.width = 100
         # background rectangle
         pygame.draw.rect(PYGAME_SCREEN, self.bg_color, render_rect, self.line_width, self.border_radius)
         # header rectangle
