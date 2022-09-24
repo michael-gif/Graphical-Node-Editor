@@ -113,7 +113,9 @@ class Node:
             self.rect.height = self.header_height + (50 * len(self.outputs))
 
     def add_input(self, name: str, color: tuple = (159, 159, 159)):
-        self.inputs.append(NodeConnector(len(self.inputs), name, color, self.fg_color, NodeConnector.INPUT))
+        connector = NodeConnector(len(self.inputs), name, color, self.fg_color, NodeConnector.INPUT)
+        connector.pos = [self.xy[0], self.xy[1] + self.header_height + 25 + (50 * len(self.inputs))]
+        self.inputs.append(connector)
         self.update_height()
         return self
 
@@ -123,7 +125,9 @@ class Node:
         return self
 
     def add_output(self, name: str, color: tuple = (159, 159, 159)):
-        self.outputs.append(NodeConnector(len(self.outputs), name, color, self.fg_color, NodeConnector.OUTPUT))
+        connector = NodeConnector(len(self.outputs), name, color, self.fg_color, NodeConnector.OUTPUT)
+        connector.pos = [self.xy[0], self.xy[1] + self.header_height + 25 + (50 * len(self.outputs))]
+        self.outputs.append(connector)
         self.update_height()
         return self
 
@@ -182,6 +186,7 @@ class Node:
             mouse_pos = pygame.mouse.get_pos()
             render_rect.x = mouse_pos[0] - self.mouse_offset[0]
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
+            self.xy = render_rect.x, render_rect.y
         tmp = 0
         if self.inputs:
             tmp += node_connection_name_font.size(self.inputs[0].name)[0] + 10
