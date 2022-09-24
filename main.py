@@ -28,6 +28,8 @@ class App(tk.Tk):
         os.environ['SDL_WINDOWID'] = str(pygame_embed.winfo_id())
         os.environ['SDL_VIDEODRIVER'] = 'windib'
 
+        self.export_window_open = False
+
         self.save_path = ""
         self.selected_input_value = None
         self.selected_output_value = None
@@ -37,6 +39,16 @@ class App(tk.Tk):
         self.selected_output_entry = None
         self.name_entry = None
         self.description_entry = None
+
+        self.bind('<KeyPress>', self.on_key_press)
+        self.prev_key = None
+
+    def on_key_press(self, event):
+        if self.prev_key == 'Control_L' or self.prev_key == 'Control_R':
+            if event.keysym == 's':
+                self.export()
+        else:
+            self.prev_key = event.keysym
 
     def confirm_quit(self):
         quit_window = tk.Toplevel(self)
@@ -226,8 +238,17 @@ class App(tk.Tk):
                 f.write(json.dumps(output, indent=4))
 
     def export(self):
+
+        def close_export_window():
+            self.export_window_open = False
+            export_window.destroy()
+
+        if self.export_window_open:
+            return
+        self.export_window_open = True
         export_window = tk.Toplevel(self)
         export_window.title("Export")
+        export_window.protocol("WM_DELETE_WINDOW", close_export_window)
         w, h = 270, 195
         ws = self.winfo_screenwidth()
         hs = self.winfo_screenheight()
@@ -247,7 +268,7 @@ class App(tk.Tk):
 
         def destruct():
             self.export_to_file(selected_format.get())
-            export_window.destroy()
+            close_export_window()
 
         content = tk.Frame(export_window, relief='sunken')
         content.place(x=10, y=10, width=250, height=175)
@@ -281,6 +302,7 @@ na.init(screen)
 
 def pygame_loop():
     running = True
+    export_keys = False
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -291,6 +313,15 @@ def pygame_loop():
         mouse = pygame.mouse.get_pressed()
         na.update(mouse)
         na.render_all()
+        '''keys = pygame.key.get_pressed()
+        if keys[pygame.K_LCTRL] and keys[pygame.K_s]:
+            if not export_keys:
+                export_keys = True
+                print(1)
+                app.export()
+        else:
+            export_keys = False'''
+
         pygame.display.update()
     pygame.quit()
 
