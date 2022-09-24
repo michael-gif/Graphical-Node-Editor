@@ -270,7 +270,6 @@ class App(tk.Tk):
 
     def export_settings(self):
         temp_options = {option[0]: None for option in self.export_options}
-        print(temp_options)
 
         def close_export_settings():
             options = []
@@ -278,7 +277,6 @@ class App(tk.Tk):
                 if value:
                     options.append((key, value.get()))
             self.export_options = options
-            print(self.export_options)
             export_settings_window.destroy()
 
         def update_export_options(key: str, var: tk.StringVar):
@@ -382,7 +380,7 @@ class App(tk.Tk):
                 output = {}
                 output_nodes = []
                 for node in na.NODE_LIST:
-                    output_nodes.append({
+                    tmp = {
                         "id": node.id,
                         "name": node.display_name,
                         "description": node.description,
@@ -393,8 +391,18 @@ class App(tk.Tk):
                         "outputs": [
                             {"id": otpt.id, "name": otpt.name} for otpt in node.outputs
                         ]
-                    })
+                    }
+                    to_append = {}
+                    for option in self.export_options:
+                        if option[0] in tmp:
+                            to_append[option[0]] = tmp[option[0]]
+                    output_nodes.append(to_append)
                 output['nodes'] = output_nodes
+
+                if 'connections' not in [opt[0] for opt in self.export_options]:
+                    f.write(json.dumps(output, indent=4))
+                    return
+
                 output_connections = []
                 for conn in na.CONNECTION_LIST:
                     output_connections.append({
