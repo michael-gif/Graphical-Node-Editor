@@ -52,6 +52,16 @@ def create_new_node():
         selected_input.delete(0,tk.END)
         selected_input.insert(0,w.get(int(w.curselection()[0])))
 
+    def remove_inputs():
+        selection = inputs_listbox.curselection()
+        inputs_listbox.delete(selection[0], selection[-1])
+        selected_input.delete(0, tk.END)
+
+    def remove_outputs():
+        selection = outputs_listbox.curselection()
+        outputs_listbox.delete(selection[0], selection[-1])
+        selected_output.delete(0, tk.END)
+
     def output_select(event):
         w = event.widget
         selected_output.delete(0,tk.END)
@@ -66,7 +76,7 @@ def create_new_node():
     selected_input.place(x=0, y=255, width=120, height=25)
     add_input_button = tk.Button(content, text="+")
     add_input_button.place(x=120, y=255, width=25, height=25)
-    remove_input_button = tk.Button(content, text="-")
+    remove_input_button = tk.Button(content, text="-", command=remove_inputs)
     remove_input_button.place(x=145, y=255, width=25, height=25)
 
     outputs_label = tk.Label(content, text="Outputs")
@@ -78,7 +88,7 @@ def create_new_node():
     selected_output.place(x=180, y=255, width=120, height=25)
     add_output_button = tk.Button(content, text="+")
     add_output_button.place(x=300, y=255, width=25, height=25)
-    remove_output_button = tk.Button(content, text="-")
+    remove_output_button = tk.Button(content, text="-", command=remove_outputs)
     remove_output_button.place(x=325, y=255, width=25, height=25)
 
     for i in range(10):
