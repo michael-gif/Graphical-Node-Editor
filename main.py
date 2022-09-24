@@ -366,14 +366,6 @@ def pygame_loop():
         mouse = pygame.mouse.get_pressed()
         na.update(mouse)
         na.render_all()
-        '''keys = pygame.key.get_pressed()
-        if keys[pygame.K_LCTRL] and keys[pygame.K_s]:
-            if not export_keys:
-                export_keys = True
-                print(1)
-                app.export()
-        else:
-            export_keys = False'''
 
         pygame.display.update()
     pygame.quit()
