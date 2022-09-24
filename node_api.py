@@ -41,8 +41,9 @@ class Node:
         self.line_width = 0
         self.border_radius = 5
         self.display_name = display_name
+        self.description = ""
         self.header_color = (129, 52, 75)
-        self.header_height = node_header_font.size(display_name)[1]
+        self.header_height = node_header_font.size(display_name)[1] + 30
 
         self.mouse_offset = None
         self.inputs = []
@@ -77,27 +78,33 @@ class Node:
         self.header_color = color
         return self
 
+    def set_desciption(self, description: str):
+        self.description = description
+        return self
+
+    def update_height(self):
+        if len(self.inputs) > len(self.outputs):
+            self.rect.height = self.header_height + (50 * len(self.inputs))
+        else:
+            self.rect.height = self.header_height + (50 * len(self.outputs))
+
     def add_input(self, name: str, color: tuple = (159, 159, 159)):
         self.inputs.append(NodeConnector(name, color, self.fg_color, NodeConnector.INPUT))
-        if len(self.inputs) > len(self.outputs):
-            self.rect.height += 50
+        self.update_height()
         return self
 
     def remove_input(self, index: int):
-        if len(self.inputs) > len(self.outputs):
-            self.rect.height -= 50
+        self.update_height()
         self.inputs.pop(index)
         return self
 
     def add_output(self, name: str, color: tuple = (159, 159, 159)):
         self.outputs.append(NodeConnector(name, color, self.fg_color, NodeConnector.OUTPUT))
-        if len(self.outputs) > len(self.inputs):
-            self.rect.height += 50
+        self.update_height()
         return self
 
     def remove_output(self, index: int):
-        if len(self.outputs) > len(self.inputs):
-            self.rect.height -= 50
+        self.update_height()
         self.outputs.pop(index)
         return self
 
@@ -137,7 +144,7 @@ class Node:
         pygame.draw.rect(PYGAME_SCREEN, self.bg_color, render_rect, self.line_width, self.border_radius)
         # header rectangle
         pygame.draw.rect(PYGAME_SCREEN, self.header_color,
-                         (render_rect.x, render_rect.y, render_rect.width, 20 + self.header_height), 0, 0,
+                         (render_rect.x, render_rect.y, render_rect.width, self.header_height), 0, 0,
                          self.border_radius, self.border_radius, 0, 0)
         # outline rectangle
         pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2, self.border_radius)
