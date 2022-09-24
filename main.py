@@ -2,6 +2,7 @@ import os
 import pygame
 import tkinter as tk
 import node_api as na
+import string
 
 from threading import Thread
 
@@ -47,34 +48,59 @@ def create_new_node():
     description_entry = tk.Entry(content)
     description_entry.place(x=125, y=30, width=225, height=25)
 
+    def input_edit(event):
+        value = svar.get()
+        if event.char in string.printable:
+            if inputs_listbox.curselection() and int(inputs_listbox.curselection()[0]) != 0:
+                selected_item_index = int(inputs_listbox.curselection()[0])
+                inputs_listbox.focus_set()
+                inputs_listbox.delete(selected_item_index, selected_item_index)
+                inputs_listbox.insert(selected_item_index, value)
+                selected_input.focus_set()
+                inputs_listbox.select_set(selected_item_index)
+
     def input_select(event):
         w = event.widget
-        selected_input.delete(0,tk.END)
-        selected_input.insert(0,w.get(int(w.curselection()[0])))
-
-    def remove_inputs():
-        selection = inputs_listbox.curselection()
-        inputs_listbox.delete(selection[0], selection[-1])
-        selected_input.delete(0, tk.END)
-
-    def remove_outputs():
-        selection = outputs_listbox.curselection()
-        outputs_listbox.delete(selection[0], selection[-1])
-        selected_output.delete(0, tk.END)
+        if w.curselection():
+            selected_input.delete(0, tk.END)
+            selected_input.insert(0, w.get(int(w.curselection()[0])))
 
     def output_select(event):
         w = event.widget
-        selected_output.delete(0,tk.END)
-        selected_output.insert(0,w.get(int(w.curselection()[0])))
+        if w.curselection():
+            selected_output.delete(0, tk.END)
+            selected_output.insert(0, w.get(int(w.curselection()[0])))
+
+    def add_input():
+        inputs_listbox.insert(tk.END, svar.get())
+        selected_input.delete(0, tk.END)
+
+    def remove_inputs():
+        selection = inputs_listbox.curselection()
+        if selection and selection[0] != 0:
+            inputs_listbox.delete(selection[0], selection[-1])
+            selected_input.delete(0, tk.END)
+            inputs_listbox.select_set(selection[0])
+
+    def remove_outputs():
+        selection = outputs_listbox.curselection()
+        if selection and selection[0] != 0:
+            outputs_listbox.delete(selection[0], selection[-1])
+            selected_output.delete(0, tk.END)
+            outputs_listbox.select_set(selection[0])
+
+    svar = tk.StringVar()
+    #svar.trace('w', input_edit)
 
     inputs_label = tk.Label(content, text="Inputs")
     inputs_label.place(x=0, y=75, width=170, height=25)
     inputs_listbox = tk.Listbox(content)
     inputs_listbox.bind('<<ListboxSelect>>', input_select)
     inputs_listbox.place(x=0, y=100, width=170, height=165)
-    selected_input = tk.Entry(content)
+    selected_input = tk.Entry(content, textvariable=svar)
     selected_input.place(x=0, y=270, width=120, height=25)
-    add_input_button = tk.Button(content, text="+")
+    selected_input.bind("<KeyRelease>", input_edit)
+    add_input_button = tk.Button(content, text="+", command=add_input)
     add_input_button.place(x=120, y=270, width=25, height=25)
     remove_input_button = tk.Button(content, text="-", command=remove_inputs)
     remove_input_button.place(x=145, y=270, width=25, height=25)
@@ -94,6 +120,8 @@ def create_new_node():
     create_node_button = tk.Button(content, text="Create Node")
     create_node_button.place(x=0, y=310, width=350, height=40)
 
+    inputs_listbox.insert(0, '')
+    outputs_listbox.insert(0, '')
     for i in range(10):
         inputs_listbox.insert(tk.END, i)
     for i in range(10):
