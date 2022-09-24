@@ -6,7 +6,8 @@ class NodeConnector:
     INPUT = 1
     OUTPUT = 2
 
-    def __init__(self, name: str, color: tuple, text_color: tuple, type: int):
+    def __init__(self, id, name: str, color: tuple, text_color: tuple, type: int):
+        self.id = id
         self.name = name
         self.color = color
         self.text_color = text_color
@@ -108,7 +109,7 @@ class Node:
             self.rect.height = self.header_height + (50 * len(self.outputs))
 
     def add_input(self, name: str, color: tuple = (159, 159, 159)):
-        self.inputs.append(NodeConnector(name, color, self.fg_color, NodeConnector.INPUT))
+        self.inputs.append(NodeConnector(len(self.inputs), name, color, self.fg_color, NodeConnector.INPUT))
         self.update_height()
         return self
 
@@ -118,7 +119,7 @@ class Node:
         return self
 
     def add_output(self, name: str, color: tuple = (159, 159, 159)):
-        self.outputs.append(NodeConnector(name, color, self.fg_color, NodeConnector.OUTPUT))
+        self.outputs.append(NodeConnector(len(self.outputs), name, color, self.fg_color, NodeConnector.OUTPUT))
         self.update_height()
         return self
 

@@ -1,8 +1,10 @@
 import os
 import pygame
+import string
+import json
+
 import tkinter as tk
 import node_api as na
-import string
 
 from threading import Thread
 from tkinter.filedialog import asksaveasfilename
@@ -25,7 +27,7 @@ class App(tk.Tk):
         pygame_embed.pack()
         os.environ['SDL_WINDOWID'] = str(pygame_embed.winfo_id())
         os.environ['SDL_VIDEODRIVER'] = 'windib'
-        
+
         self.save_path = ""
         self.selected_input_value = None
         self.selected_output_value = None
@@ -188,6 +190,36 @@ class App(tk.Tk):
         self.inputs_listbox.insert(0, '')
         self.outputs_listbox.insert(0, '')
 
+    def export_to_file(self, type: str):
+        with open(self.save_path, 'w') as f:
+            if type == 'json':
+                output = {}
+                output_nodes = []
+                for node in na.NODE_LIST:
+                    output_nodes.append({
+                        "id": node.id,
+                        "name": node.display_name,
+                        "description": node.description,
+                        "xy": node.xy,
+                    })
+                output['nodes'] = output_nodes
+                output_connections = []
+                for conn in na.CONNECTION_LIST:
+                    output_connections.append({
+                        "start_node_id": conn[0],
+                        "end_node_id": conn[1],
+                        "start_connector": {
+                            "id": conn[2].id,
+                            "name": conn[2].name,
+                        },
+                        "end_connector": {
+                            "id": conn[3].id,
+                            "name": conn[3].name
+                        }
+                    })
+                output['connections'] = output_connections
+                f.write(json.dumps(output))
+
     def export(self):
         export_window = tk.Toplevel(self)
         export_window.title("Export")
@@ -202,8 +234,10 @@ class App(tk.Tk):
 
         def browse():
             self.save_path = asksaveasfilename(initialfile=f"untitled.{selected_format.get()}",
-                                          defaultextension=f'.{selected_format.get()}',
-                                          filetypes=[(f'{selected_format.get().upper()}', f'.{selected_format.get()}')])
+                                               defaultextension=f'.{selected_format.get()}',
+                                               filetypes=[
+                                                   (f'{selected_format.get().upper()}', f'.{selected_format.get()}')])
+            export_window.lift()
 
         content = tk.Frame(export_window, relief='sunken')
         content.place(x=10, y=10, width=250, height=175)
@@ -223,7 +257,7 @@ class App(tk.Tk):
         json_type.place(x=0, y=80)
         ini_type = tk.Radiobutton(content, text='INI', value='ini', variable=selected_format)
         ini_type.place(x=0, y=105)
-        export_button = tk.Button(content, text='Export')
+        export_button = tk.Button(content, text='Export', command=lambda: self.export_to_file(selected_format.get()))
         export_button.place(x=0, y=135, width=250, height=40)
 
 
@@ -234,26 +268,11 @@ pygame.display.init()
 pygame.display.update()
 na.init(screen)
 
-na.create_node(na.Node("Image Texture")
-               .set_xy((100, 100))
-               .set_desciption("testing the description mechanic with a lot of text")
-               .add_input("input 1")
-               .add_input("input 2")
-               .add_output("output 1")
-               .add_output("output 2")
-               )
-na.create_node(na.Node("Dilate/Erode")
-               .set_xy((100, 100))
-               .add_input("input 1")
-               .add_input("input 2")
-               .add_output("output 1")
-               .add_output("output 2")
-               )
 na.create_node(na.Node("ATC")
                .set_desciption("atc")
                .add_output("")
                )
-
+na.create_node
 
 def pygame_loop():
     running = True
