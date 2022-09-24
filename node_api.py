@@ -314,6 +314,7 @@ def update(mouse: tuple):
                         connection_element = (CONNECTOR_PARENT.id, node.id, SELECTED_CONNECTOR, conn)
                         if connection_element not in CONNECTION_LIST:
                             CONNECTION_LIST.append(connection_element)
+                            print(CONNECTION_LIST[-1][2].name)
         SELECTED_CONNECTOR = None
 
 

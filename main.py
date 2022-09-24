@@ -64,17 +64,33 @@ def create_new_node():
         w = event.widget
         if w.curselection():
             selected_input.delete(0, tk.END)
-            selected_input.insert(0, w.get(int(w.curselection()[0])))
+            value = w.get(int(w.curselection()[0]))
+            if value == '<empty>':
+                value = ''
+            selected_input.insert(0, value)
 
     def output_select(event):
         w = event.widget
         if w.curselection():
             selected_output.delete(0, tk.END)
-            selected_output.insert(0, w.get(int(w.curselection()[0])))
+            value = w.get(int(w.curselection()[0]))
+            if value == '<empty>':
+                value = ''
+            selected_output.insert(0, value)
 
     def add_input():
-        inputs_listbox.insert(tk.END, svar.get())
+        value = svar.get()
+        if not value:
+            value = '<empty>'
+        inputs_listbox.insert(tk.END, value)
         selected_input.delete(0, tk.END)
+
+    def add_output():
+        value = svar.get()
+        if not value:
+            value = '<empty>'
+        outputs_listbox.insert(tk.END, value)
+        selected_output.delete(0, tk.END)
 
     def remove_inputs():
         selection = inputs_listbox.curselection()
@@ -120,7 +136,7 @@ def create_new_node():
     outputs_listbox.place(x=180, y=100, width=170, height=165)
     selected_output = tk.Entry(content)
     selected_output.place(x=180, y=270, width=120, height=25)
-    add_output_button = tk.Button(content, text="+")
+    add_output_button = tk.Button(content, text="+", command=add_output)
     add_output_button.place(x=300, y=270, width=25, height=25)
     remove_output_button = tk.Button(content, text="-", command=remove_outputs)
     remove_output_button.place(x=325, y=270, width=25, height=25)
@@ -130,10 +146,6 @@ def create_new_node():
 
     inputs_listbox.insert(0, '')
     outputs_listbox.insert(0, '')
-    for i in range(10):
-        inputs_listbox.insert(tk.END, i)
-    for i in range(10):
-        outputs_listbox.insert(tk.END, i)
 
 
 root.protocol("WM_DELETE_WINDOW", confirm_quit)
