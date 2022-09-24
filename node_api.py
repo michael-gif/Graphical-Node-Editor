@@ -173,7 +173,7 @@ class Node:
 
         # display name
         display_text_surface = node_header_font.render(self.display_name, True, self.fg_color)
-        PYGAME_SCREEN.blit(display_text_surface, (render_rect[0] + 10, render_rect[1] + 10))
+        PYGAME_SCREEN.blit(display_text_surface, (render_rect[0] + 10, render_rect[1] + (self.header_height - display_text_surface.get_size()[1]) / 2))
 
         # description
         lines = self.split_description(self.description)
