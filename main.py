@@ -29,6 +29,7 @@ class App(tk.Tk):
         os.environ['SDL_VIDEODRIVER'] = 'windib'
 
         self.export_window_open = False
+        self.new_node_window_open = False
 
         self.save_path = ""
         self.selected_input_value = None
@@ -40,15 +41,14 @@ class App(tk.Tk):
         self.name_entry = None
         self.description_entry = None
 
-        self.bind('<KeyPress>', self.on_key_press)
-        self.prev_key = None
+        self.bind('<Control-n>', self.open_new_node_window)
+        self.bind('<Control-s>', self.open_new_node_window)
 
-    def on_key_press(self, event):
-        if self.prev_key == 'Control_L' or self.prev_key == 'Control_R':
-            if event.keysym == 's':
-                self.export()
-        else:
-            self.prev_key = event.keysym
+    def open_new_node_window(self, event):
+        self.create_new_node()
+
+    def open_export_window(self, event):
+        self.export()
 
     def confirm_quit(self):
         quit_window = tk.Toplevel(self)
@@ -145,13 +145,21 @@ class App(tk.Tk):
         na.create_node(new_node)
 
     def create_new_node(self):
+        if self.new_node_window_open:
+            return
+        self.new_node_window_open = True
 
         def destruct():
+            self.new_node_window_open = False
+            new_node_window.destroy()
+
+        def compile_node():
             self.build_node()
             new_node_window.lift()
 
         new_node_window = tk.Toplevel(self)
         new_node_window.title("Create new node")
+        new_node_window.protocol("WM_DELETE_WINDOW", destruct)
         w, h = 370, 370
         ws = self.winfo_screenwidth()
         hs = self.winfo_screenheight()
@@ -201,7 +209,7 @@ class App(tk.Tk):
         remove_output_button = tk.Button(content, text="-", command=self.remove_outputs)
         remove_output_button.place(x=325, y=270, width=25, height=25)
 
-        create_node_button = tk.Button(content, text="Create Node", command=destruct)
+        create_node_button = tk.Button(content, text="Create Node", command=compile_node)
         create_node_button.place(x=0, y=310, width=350, height=40)
 
         self.inputs_listbox.insert(0, '')
@@ -238,14 +246,14 @@ class App(tk.Tk):
                 f.write(json.dumps(output, indent=4))
 
     def export(self):
+        if self.export_window_open:
+            return
+        self.export_window_open = True
 
         def close_export_window():
             self.export_window_open = False
             export_window.destroy()
 
-        if self.export_window_open:
-            return
-        self.export_window_open = True
         export_window = tk.Toplevel(self)
         export_window.title("Export")
         export_window.protocol("WM_DELETE_WINDOW", close_export_window)
