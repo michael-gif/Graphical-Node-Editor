@@ -133,6 +133,11 @@ class App(tk.Tk):
         na.create_node(new_node)
 
     def create_new_node(self):
+
+        def destruct():
+            self.build_node()
+            new_node_window.lift()
+
         new_node_window = tk.Toplevel(self)
         new_node_window.title("Create new node")
         w, h = 370, 370
@@ -184,7 +189,7 @@ class App(tk.Tk):
         remove_output_button = tk.Button(content, text="-", command=self.remove_outputs)
         remove_output_button.place(x=325, y=270, width=25, height=25)
 
-        create_node_button = tk.Button(content, text="Create Node", command=self.build_node)
+        create_node_button = tk.Button(content, text="Create Node", command=destruct)
         create_node_button.place(x=0, y=310, width=350, height=40)
 
         self.inputs_listbox.insert(0, '')
@@ -240,7 +245,7 @@ class App(tk.Tk):
             export_window.lift()
             destination_entry.insert(0, self.save_path)
 
-        def compile():
+        def destruct():
             self.export_to_file(selected_format.get())
             export_window.destroy()
 
@@ -262,7 +267,7 @@ class App(tk.Tk):
         json_type.place(x=0, y=80)
         ini_type = tk.Radiobutton(content, text='INI', value='ini', variable=selected_format)
         ini_type.place(x=0, y=105)
-        export_button = tk.Button(content, text='Export', command=compile)
+        export_button = tk.Button(content, text='Export', command=destruct)
         export_button.place(x=0, y=135, width=250, height=40)
 
 
