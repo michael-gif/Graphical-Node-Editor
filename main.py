@@ -28,6 +28,7 @@ class App(tk.Tk):
         
         self.save_path = ""
         self.selected_input_value = None
+        self.selected_output_value = None
         self.inputs_listbox = None
         self.outputs_listbox = None
         self.selected_input_entry = None
@@ -59,6 +60,17 @@ class App(tk.Tk):
                 self.inputs_listbox.insert(selected_item_index, value)
                 self.selected_input_entry.focus_set()
                 self.inputs_listbox.select_set(selected_item_index)
+
+    def output_edit(self, event):
+        value = self.selected_output_value.get()
+        if event.char in string.printable:
+            if self.outputs_listbox.curselection() and int(self.outputs_listbox.curselection()[0]) != 0:
+                selected_item_index = int(self.outputs_listbox.curselection()[0])
+                self.outputs_listbox.focus_set()
+                self.outputs_listbox.delete(selected_item_index, selected_item_index)
+                self.outputs_listbox.insert(selected_item_index, value)
+                self.selected_output_entry.focus_set()
+                self.outputs_listbox.select_set(selected_item_index)
 
     def input_select(self, event):
         w = event.widget
@@ -142,6 +154,7 @@ class App(tk.Tk):
         self.description_entry.place(x=125, y=30, width=225, height=25)
 
         self.selected_input_value = tk.StringVar()
+        self.selected_output_value = tk.StringVar()
 
         inputs_label = tk.Label(content, text="Inputs")
         inputs_label.place(x=0, y=75, width=170, height=25)
@@ -161,8 +174,9 @@ class App(tk.Tk):
         self.outputs_listbox = tk.Listbox(content)
         self.outputs_listbox.bind('<<ListboxSelect>>', self.output_select)
         self.outputs_listbox.place(x=180, y=100, width=170, height=165)
-        self.selected_output_entry = tk.Entry(content)
+        self.selected_output_entry = tk.Entry(content, textvariable=self.selected_output_value)
         self.selected_output_entry.place(x=180, y=270, width=120, height=25)
+        self.selected_output_entry.bind("<KeyRelease>", self.output_edit)
         add_output_button = tk.Button(content, text="+", command=self.add_output)
         add_output_button.place(x=300, y=270, width=25, height=25)
         remove_output_button = tk.Button(content, text="-", command=self.remove_outputs)
