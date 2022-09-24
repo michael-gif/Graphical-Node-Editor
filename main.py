@@ -25,6 +25,7 @@ def confirm_quit():
     label.pack()
     button.pack()
 
+
 def create_new_node():
     new_node_window = tk.Toplevel(root)
     new_node_window.title("Create new node")
