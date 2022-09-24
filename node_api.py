@@ -34,9 +34,9 @@ class Node:
     def __init__(self, display_name: str):
         self.id = len(NODE_LIST)
         self.rect = pygame.Rect(0, 0, 0, 50)
-        self.xy = None
+        self.xy = (0, 0)
         self.custom_wh = None
-        self.bg_color = (128, 128, 128)
+        self.bg_color = (52, 52, 52)
         self.fg_color = (228, 228, 228)
         self.line_width = 0
         self.border_radius = 5
@@ -150,6 +150,7 @@ class Node:
             else:
                 lines.append(line.strip())
                 line = word
+        lines.append(line.strip())
         return lines
 
     def render(self):
@@ -159,7 +160,7 @@ class Node:
             render_rect.x = mouse_pos[0] - self.mouse_offset[0]
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
 
-        render_rect.width = node_header_font.size(self.display_name)[0] + 20 + self.description_max_width + 10
+        render_rect.width = node_header_font.size(self.display_name)[0] + 20 + self.description_max_width + 50
         if render_rect.width < 200:
             render_rect.width = 200
         # background rectangle
@@ -173,21 +174,26 @@ class Node:
 
         # display name
         display_text_surface = node_header_font.render(self.display_name, True, self.fg_color)
-        PYGAME_SCREEN.blit(display_text_surface, (render_rect[0] + 10, render_rect[1] + (self.header_height - display_text_surface.get_size()[1]) / 2))
+        PYGAME_SCREEN.blit(display_text_surface, (
+            render_rect[0] + 10, render_rect[1] + (self.header_height - display_text_surface.get_size()[1]) / 2))
 
         # description
         lines = self.split_description(self.description)
+        description_height = node_connection_name_font.size(lines[0])[1] * len(lines)
+        full_height = self.header_height + 25 + description_height + 10
+        if full_height > render_rect.height:
+            render_rect.height = full_height
         for x in range(len(lines)):
             line_text_surface = node_connection_name_font.render(lines[x], True, self.fg_color)
             line_size = line_text_surface.get_size()
             line_pos = [0, 0]
             if len(self.inputs):
                 input_size = node_connection_name_font.size(self.inputs[0].name)
-                line_pos[0] = render_rect.x + 10 + input_size[0] + 10
-                line_pos[1] = render_rect.y + self.header_height + input_size[1] + (x * input_size[1])
+                line_pos[0] = render_rect.x + 10 + input_size[0] + 25
+                line_pos[1] = render_rect.y + self.header_height + 25 + (x * input_size[1]) - 10
             else:
                 line_pos[0] = render_rect.x + 25
-                line_pos[1] = render_rect.y + self.header_height + input_size[1] + (x * line_size[1])
+                line_pos[1] = render_rect.y + self.header_height + 25 + (x * line_size[1]) - 10
             PYGAME_SCREEN.blit(line_text_surface, line_pos)
 
         # draw all inputs
