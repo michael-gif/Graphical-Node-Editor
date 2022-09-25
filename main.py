@@ -44,15 +44,15 @@ class App(tk.Tk):
         self.selected_output_entry = None
         self.name_entry = None
         self.description_entry = None
-        self.export_options = [
-            ('id', 'ID'),
-            ('name', 'name'),
-            ('description', 'description'),
-            ('xy', 'xy'),
-            ('inputs', 'inputs'),
-            ('outputs', 'outputs'),
-            ('connections', 'connections')
-        ]
+        self.export_options = {
+            'id': ('id', True),
+            'name': ('name', True),
+            'description': ('description', True),
+            'xy': ('xy', True),
+            'inputs': ('inputs', True),
+            'outputs': ('outputs', True),
+            'connections': ('connections', True)
+        }
 
         self.bind('<Control-n>', self.open_new_node_window)
         self.bind('<Control-o>', self.open_import_window)
@@ -269,14 +269,15 @@ class App(tk.Tk):
         self.import_window_open = False
 
     def export_settings(self):
-        temp_options = {option[0]: None for option in self.export_options}
+        temp_options = {option[0]: None for option in self.export_options.items()}
 
         def close_export_settings():
-            options = []
             for key, value in temp_options.items():
                 if value:
-                    options.append((key, value.get()))
-            self.export_options = options
+                    self.export_options[key] = (value.get(), True)
+                else:
+                    self.export_options[key] = (self.export_options[key][0], False)
+            print(self.export_options)
             export_settings_window.destroy()
 
         def update_export_options(key: str, var: tk.StringVar):
@@ -303,72 +304,72 @@ class App(tk.Tk):
         name_in_file_label = tk.Label(content, text='Name in file')
         name_in_file_label.place(x=125, y=0, width=125)
 
-        node_id_var = tk.StringVar(value='ID')
+        node_id_var = tk.StringVar(value=self.export_options['id'][0])
         node_id_check = tk.Checkbutton(content, text='ID',
                                        command=lambda: update_export_options('id', node_id_var))
         node_id_check.place(x=0, y=25)
-        if 'id' in temp_options:
+        if self.export_options['id'][1]:
             temp_options['id'] = node_id_var
             node_id_check.select()
         node_id_entry = tk.Entry(content, textvariable=node_id_var)
         node_id_entry.place(x=125, y=25, width=125, height=20)
 
-        display_name_var = tk.StringVar(value='name')
+        display_name_var = tk.StringVar(value=self.export_options['name'][0])
         display_name_check = tk.Checkbutton(content, text='Display Name',
                                             command=lambda: update_export_options('name', display_name_var))
         display_name_check.place(x=0, y=50)
-        if 'name' in temp_options:
+        if self.export_options['name'][1]:
             temp_options['name'] = display_name_var
             display_name_check.select()
         display_name_entry = tk.Entry(content, textvariable=display_name_var)
         display_name_entry.place(x=125, y=50, width=125, height=20)
 
-        node_description_var = tk.StringVar(value='description')
+        node_description_var = tk.StringVar(value=self.export_options['description'][0])
         node_description_check = tk.Checkbutton(content, text='Description',
                                                 command=lambda: update_export_options('description',
                                                                                       node_description_var))
         node_description_check.place(x=0, y=75)
-        if 'description' in temp_options:
+        if self.export_options['description'][1]:
             temp_options['description'] = node_description_var
             node_description_check.select()
         node_description_entry = tk.Entry(content, textvariable=node_description_var)
         node_description_entry.place(x=125, y=75, width=125, height=20)
 
-        node_position_var = tk.StringVar(value='xy')
+        node_position_var = tk.StringVar(value=self.export_options['xy'][0])
         node_position_check = tk.Checkbutton(content, text='XY',
                                              command=lambda: update_export_options('xy', node_position_var))
         node_position_check.place(x=0, y=100)
-        if 'xy' in temp_options:
+        if self.export_options['xy'][1]:
             temp_options['xy'] = node_position_var
             node_position_check.select()
         node_position_entry = tk.Entry(content, textvariable=node_position_var)
         node_position_entry.place(x=125, y=100, width=125, height=20)
 
-        node_inputs_var = tk.StringVar(value='inputs')
+        node_inputs_var = tk.StringVar(value=self.export_options['inputs'][0])
         node_inputs_check = tk.Checkbutton(content, text='Inputs',
                                            command=lambda: update_export_options('inputs', node_inputs_var))
         node_inputs_check.place(x=0, y=125)
-        if 'inputs' in temp_options:
+        if self.export_options['inputs'][1]:
             temp_options['inputs'] = node_inputs_var
             node_inputs_check.select()
         node_inputs_entry = tk.Entry(content, textvariable=node_inputs_var)
         node_inputs_entry.place(x=125, y=125, width=125, height=20)
 
-        node_outputs_var = tk.StringVar(value='outputs')
+        node_outputs_var = tk.StringVar(value=self.export_options['outputs'][0])
         node_outputs_check = tk.Checkbutton(content, text='Outputs',
                                             command=lambda: update_export_options('outputs', node_outputs_var))
         node_outputs_check.place(x=0, y=150)
-        if 'outputs' in temp_options:
+        if self.export_options['outputs'][1]:
             temp_options['outputs'] = node_outputs_var
             node_outputs_check.select()
         node_outputs_entry = tk.Entry(content, textvariable=node_outputs_var)
         node_outputs_entry.place(x=125, y=150, width=125, height=20)
 
-        connections_var = tk.StringVar(value='connections')
+        connections_var = tk.StringVar(value=self.export_options['connections'][0])
         connections_check = tk.Checkbutton(content, text='Connections',
                                            command=lambda: update_export_options('connections', connections_var))
         connections_check.place(x=0, y=175)
-        if 'connections' in temp_options:
+        if self.export_options['connections'][1]:
             temp_options['connections'] = connections_var
             connections_check.select()
         connections_entry = tk.Entry(content, textvariable=connections_var)
@@ -393,9 +394,9 @@ class App(tk.Tk):
                         ]
                     }
                     to_append = {}
-                    for option in self.export_options:
-                        if option[0] in tmp:
-                            to_append[option[0]] = tmp[option[0]]
+                    for key, value in self.export_options.items():
+                        if value[1]:
+                            to_append[value[0]] = tmp[key]
                     output_nodes.append(to_append)
                 output['nodes'] = output_nodes
 
