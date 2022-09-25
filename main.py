@@ -32,6 +32,7 @@ class App(tk.Tk):
         self.update_idletasks()
 
         self.export_window_open = False
+        self.export_settings_open = False
         self.import_window_open = False
         self.new_node_window_open = False
 
@@ -269,6 +270,9 @@ class App(tk.Tk):
         self.import_window_open = False
 
     def export_settings(self):
+        if self.export_settings_open:
+            return
+        self.export_settings_open = True
         temp_options = {option[0]: None for option in self.export_options.items()}
 
         def close_export_settings():
@@ -277,7 +281,7 @@ class App(tk.Tk):
                     self.export_options[key] = (value.get(), True)
                 else:
                     self.export_options[key] = (self.export_options[key][0], False)
-            print(self.export_options)
+            self.export_settings_open = False
             export_settings_window.destroy()
 
         def update_export_options(key: str, var: tk.StringVar):
