@@ -63,7 +63,6 @@ class App(tk.Tk):
         self.create_new_node()
 
     def open_import_window(self, event):
-        print(1)
         self.import_file()
 
     def open_export_window(self, event):
@@ -261,6 +260,8 @@ class App(tk.Tk):
             end_node_id = int(conn['end_node_id'])
             start_connector_id = int(conn['start_connector_id'])
             end_connector_id = int(conn['end_connector_id'])
+            start_connector = None
+            end_connector = None
             for node in na.NODE_LIST:
                 if node.id == start_node_id:
                     start_connector = node.outputs[start_connector_id]
@@ -379,9 +380,9 @@ class App(tk.Tk):
         connections_entry = tk.Entry(content, textvariable=connections_var)
         connections_entry.place(x=125, y=175, width=125, height=20)
 
-    def export_to_file(self, type: str):
+    def export_to_file(self, file_type: str):
         with open(self.save_path, 'w') as f:
-            if type == 'json':
+            if file_type == 'json':
                 output = {}
                 output_nodes = []
                 for node in na.NODE_LIST:
@@ -487,7 +488,6 @@ na.init(screen)
 
 def pygame_loop():
     running = True
-    export_keys = False
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
