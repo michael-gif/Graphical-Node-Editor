@@ -1,4 +1,5 @@
 import os
+import sys
 import pygame
 import string
 import json
@@ -6,14 +7,23 @@ import json
 import tkinter as tk
 import node_api as na
 
+from sys import exit
 from threading import Thread
 from tkinter.filedialog import asksaveasfilename, askopenfilename
+
+if getattr(sys, 'frozen', False):
+    application_path = sys._MEIPASS
+elif __file__:
+    application_path = os.path.dirname(__file__)
+
+icon_file = 'icon.ico'
 
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Node Editor")
+        self.iconbitmap(default=os.path.join(application_path, icon_file))
         self.state("zoomed")
         self.protocol("WM_DELETE_WINDOW", self.confirm_quit)
         toolbar = tk.Menu(self)
@@ -78,7 +88,7 @@ class App(tk.Tk):
         y = (hs / 2) - (h / 2)
         quit_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
         label = tk.Label(quit_window, text="Are you sure you want to quit?")
-        button = tk.Button(quit_window, text="Quit", command=quit)
+        button = tk.Button(quit_window, text="Quit", command=exit)
         label.pack()
         button.pack()
 
