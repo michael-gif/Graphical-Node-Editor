@@ -128,5 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-Node Editor.exe
+NodeEditor.exe
 Source Code.zip
