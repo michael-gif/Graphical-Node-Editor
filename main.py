@@ -265,12 +265,16 @@ class App(tk.Tk):
                     active.inputs[i].name = inpts[i]
                 else:
                     active.add_input(inpts[i])
+            if len(inpts) < len(active.inputs):
+                active.inputs = active.inputs[:len(inpts)]
             otpts = outputs_listbox.get(1, tk.END)
             for i in range(len(otpts)):
                 if i < len(active.outputs):
                     active.outputs[i].name = otpts[i]
                 else:
                     active.add_output(otpts[i])
+            if len(otpts) < len(active.outputs):
+                active.outputs = active.outputs[:len(otpts)]
             self.edit_node_window.lift()
 
         def input_edit(event):

@@ -1,4 +1,6 @@
 import pygame
+import ctypes
+
 from pygame import gfxdraw
 
 
@@ -69,6 +71,8 @@ class Node:
         self.grid_offset = None
         self.inputs = []
         self.outputs = []
+
+        self.update_grid_offset()
 
     def set_id(self, id):
         self.id = id
@@ -255,6 +259,9 @@ class Node:
             o_connection.render()
 
 
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+
 pygame.font.init()
 node_header_font = pygame.font.SysFont("Calibri", 20)
 node_connection_name_font = pygame.font.SysFont("Calibri", 20)
@@ -267,7 +274,7 @@ ACTIVE_NODE: Node = None
 CONNECTOR_PARENT: Node = None
 CONNECTION_LIST: list = []
 MOUSE_DOWN: bool = False
-GRID_ORIGIN = [0, 0]
+GRID_ORIGIN = [screensize[0] // 2, screensize[1] // 2]
 GRID_OFFSET = None
 
 
