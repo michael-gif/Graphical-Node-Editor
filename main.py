@@ -46,7 +46,7 @@ class App(tk.Tk):
         self.export_settings_open = False
         self.import_window_open = False
         self.edit_node_window = None
-        self.new_node_window_open = False
+        self.new_node_window = None
 
         self.save_path = ""
         self.selected_input_value = None
@@ -94,157 +94,155 @@ class App(tk.Tk):
         label.pack()
         button.pack()
 
-    def input_edit(self, event):
-        value = self.selected_input_value.get()
-        if event.char in string.printable:
-            if self.inputs_listbox.curselection() and int(self.inputs_listbox.curselection()[0]) != 0:
-                selected_item_index = int(self.inputs_listbox.curselection()[0])
-                self.inputs_listbox.focus_set()
-                self.inputs_listbox.delete(selected_item_index, selected_item_index)
-                self.inputs_listbox.insert(selected_item_index, value)
-                self.selected_input_entry.focus_set()
-                self.inputs_listbox.select_set(selected_item_index)
-
-    def output_edit(self, event):
-        value = self.selected_output_value.get()
-        if event.char in string.printable:
-            if self.outputs_listbox.curselection() and int(self.outputs_listbox.curselection()[0]) != 0:
-                selected_item_index = int(self.outputs_listbox.curselection()[0])
-                self.outputs_listbox.focus_set()
-                self.outputs_listbox.delete(selected_item_index, selected_item_index)
-                self.outputs_listbox.insert(selected_item_index, value)
-                self.selected_output_entry.focus_set()
-                self.outputs_listbox.select_set(selected_item_index)
-
-    def input_select(self, event):
-        w = event.widget
-        if w.curselection():
-            self.selected_input_entry.delete(0, tk.END)
-            value = w.get(int(w.curselection()[0]))
-            if value == '<empty>':
-                value = ''
-            self.selected_input_entry.insert(0, value)
-
-    def output_select(self, event):
-        w = event.widget
-        if w.curselection():
-            self.selected_output_entry.delete(0, tk.END)
-            value = w.get(int(w.curselection()[0]))
-            if value == '<empty>':
-                value = ''
-            self.selected_output_entry.insert(0, value)
-
-    def add_input(self):
-        value = self.selected_input_value.get()
-        if not value:
-            value = '<empty>'
-        self.inputs_listbox.insert(tk.END, value)
-        self.selected_input_entry.delete(0, tk.END)
-
-    def add_output(self):
-        value = self.selected_output_value.get()
-        if not value:
-            value = '<empty>'
-        self.outputs_listbox.insert(tk.END, value)
-        self.selected_output_entry.delete(0, tk.END)
-
-    def remove_inputs(self):
-        selection = self.inputs_listbox.curselection()
-        if selection and selection[0] != 0:
-            self.inputs_listbox.delete(selection[0], selection[-1])
-            self.selected_input_entry.delete(0, tk.END)
-            self.inputs_listbox.select_set(selection[0])
-
-    def remove_outputs(self):
-        selection = self.outputs_listbox.curselection()
-        if selection and selection[0] != 0:
-            self.outputs_listbox.delete(selection[0], selection[-1])
-            self.selected_output_entry.delete(0, tk.END)
-            self.outputs_listbox.select_set(selection[0])
-
-    def build_node(self):
-        new_node = na.Node(self.name_entry.get()).set_description(self.description_entry.get())
-        for inpt in self.inputs_listbox.get(1, tk.END):
-            if str(inpt) == '<empty>':
-                inpt = ''
-            new_node.add_input(str(inpt))
-        for otpt in self.outputs_listbox.get(1, tk.END):
-            if str(otpt) == '<empty>':
-                otpt = ''
-            new_node.add_output(str(otpt))
-        na.create_node(new_node)
-
     def create_new_node(self):
-        if self.new_node_window_open:
+        if self.new_node_window:
+            self.new_node_window.focus_set()
+            self.new_node_window.lift()
             return
-        self.new_node_window_open = True
 
         def destruct():
-            self.new_node_window_open = False
             self.focus_set()
-            new_node_window.destroy()
+            self.new_node_window.destroy()
+            self.new_node_window = None
 
         def compile_node():
-            self.build_node()
-            new_node_window.lift()
+            new_node = na.Node(name_entry.get()).set_description(description_entry.get())
+            for inpt in inputs_listbox.get(1, tk.END):
+                if str(inpt) == '<empty>':
+                    inpt = ''
+                new_node.add_input(str(inpt))
+            for otpt in outputs_listbox.get(1, tk.END):
+                if str(otpt) == '<empty>':
+                    otpt = ''
+                new_node.add_output(str(otpt))
+            na.create_node(new_node)
+            self.new_node_window.lift()
 
-        new_node_window = tk.Toplevel(self)
-        new_node_window.title("Create new node")
-        new_node_window.protocol("WM_DELETE_WINDOW", destruct)
+        def input_edit(event):
+            value = selected_input_value.get()
+            if event.char in string.printable:
+                if inputs_listbox.curselection() and int(inputs_listbox.curselection()[0]) != 0:
+                    selected_item_index = int(inputs_listbox.curselection()[0])
+                    inputs_listbox.focus_set()
+                    inputs_listbox.delete(selected_item_index, selected_item_index)
+                    inputs_listbox.insert(selected_item_index, value)
+                    selected_input_entry.focus_set()
+                    inputs_listbox.select_set(selected_item_index)
+
+        def output_edit(event):
+            value = selected_output_value.get()
+            if event.char in string.printable:
+                if outputs_listbox.curselection() and int(outputs_listbox.curselection()[0]) != 0:
+                    selected_item_index = int(outputs_listbox.curselection()[0])
+                    outputs_listbox.focus_set()
+                    outputs_listbox.delete(selected_item_index, selected_item_index)
+                    outputs_listbox.insert(selected_item_index, value)
+                    selected_output_entry.focus_set()
+                    outputs_listbox.select_set(selected_item_index)
+
+        def input_select(event):
+            w = event.widget
+            if w.curselection():
+                selected_input_entry.delete(0, tk.END)
+                value = w.get(int(w.curselection()[0]))
+                if value == '<empty>':
+                    value = ''
+                selected_input_entry.insert(0, value)
+
+        def output_select(event):
+            w = event.widget
+            if w.curselection():
+                selected_output_entry.delete(0, tk.END)
+                value = w.get(int(w.curselection()[0]))
+                if value == '<empty>':
+                    value = ''
+                selected_output_entry.insert(0, value)
+
+        def add_input():
+            value = selected_input_value.get()
+            if not value:
+                value = '<empty>'
+            inputs_listbox.insert(tk.END, value)
+            selected_input_entry.delete(0, tk.END)
+
+        def add_output():
+            value = selected_input_value.get()
+            if not value:
+                value = '<empty>'
+            outputs_listbox.insert(tk.END, value)
+            selected_output_entry.delete(0, tk.END)
+
+        def remove_inputs():
+            selection = inputs_listbox.curselection()
+            if selection and selection[0] != 0:
+                inputs_listbox.delete(selection[0], selection[-1])
+                selected_input_entry.delete(0, tk.END)
+                inputs_listbox.select_set(selection[0])
+
+        def remove_outputs():
+            selection = outputs_listbox.curselection()
+            if selection and selection[0] != 0:
+                outputs_listbox.delete(selection[0], selection[-1])
+                selected_output_entry.delete(0, tk.END)
+                outputs_listbox.select_set(selection[0])
+
+        self.new_node_window = tk.Toplevel(self)
+        self.new_node_window.title("Create new node")
+        self.new_node_window.protocol("WM_DELETE_WINDOW", destruct)
         w, h = 370, 370
         ws = self.winfo_screenwidth()
         hs = self.winfo_screenheight()
         x = (ws / 2) - (w / 2)
         y = (hs / 2) - (h / 2)
-        new_node_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+        self.new_node_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
-        content = tk.Frame(new_node_window, relief='sunken')
+        content = tk.Frame(self.new_node_window, relief='sunken')
         content.place(x=10, y=10, width=350, height=350)
 
         name_label = tk.Label(content, text="Display Name", anchor='w')
         name_label.place(x=0, y=0, height=30)
-        self.name_entry = tk.Entry(content)
-        self.name_entry.place(x=125, y=0, width=225, height=25)
+        name_entry = tk.Entry(content)
+        name_entry.place(x=125, y=0, width=225, height=25)
 
         description_label = tk.Label(content, text="Description", anchor='w')
         description_label.place(x=0, y=30, height=30)
-        self.description_entry = tk.Entry(content)
-        self.description_entry.place(x=125, y=30, width=225, height=25)
+        description_entry = tk.Entry(content)
+        description_entry.place(x=125, y=30, width=225, height=25)
 
-        self.selected_input_value = tk.StringVar()
-        self.selected_output_value = tk.StringVar()
+        selected_input_value = tk.StringVar()
+        selected_output_value = tk.StringVar()
 
         inputs_label = tk.Label(content, text="Inputs")
         inputs_label.place(x=0, y=75, width=170, height=25)
-        self.inputs_listbox = tk.Listbox(content)
-        self.inputs_listbox.bind('<<ListboxSelect>>', self.input_select)
-        self.inputs_listbox.place(x=0, y=100, width=170, height=165)
-        self.selected_input_entry = tk.Entry(content, textvariable=self.selected_input_value)
-        self.selected_input_entry.place(x=0, y=270, width=120, height=25)
-        self.selected_input_entry.bind("<KeyRelease>", self.input_edit)
-        add_input_button = tk.Button(content, text="+", command=self.add_input)
+        inputs_listbox = tk.Listbox(content)
+        inputs_listbox.bind('<<ListboxSelect>>', input_select)
+        inputs_listbox.place(x=0, y=100, width=170, height=165)
+        selected_input_entry = tk.Entry(content, textvariable=selected_input_value)
+        selected_input_entry.place(x=0, y=270, width=120, height=25)
+        selected_input_entry.bind("<KeyRelease>", input_edit)
+        add_input_button = tk.Button(content, text="+", command=add_input)
         add_input_button.place(x=120, y=270, width=25, height=25)
-        remove_input_button = tk.Button(content, text="-", command=self.remove_inputs)
+        remove_input_button = tk.Button(content, text="-", command=remove_inputs)
         remove_input_button.place(x=145, y=270, width=25, height=25)
 
         outputs_label = tk.Label(content, text="Outputs")
         outputs_label.place(x=180, y=75, width=170, height=25)
-        self.outputs_listbox = tk.Listbox(content)
-        self.outputs_listbox.bind('<<ListboxSelect>>', self.output_select)
-        self.outputs_listbox.place(x=180, y=100, width=170, height=165)
-        self.selected_output_entry = tk.Entry(content, textvariable=self.selected_output_value)
-        self.selected_output_entry.place(x=180, y=270, width=120, height=25)
-        self.selected_output_entry.bind("<KeyRelease>", self.output_edit)
-        add_output_button = tk.Button(content, text="+", command=self.add_output)
+        outputs_listbox = tk.Listbox(content)
+        outputs_listbox.bind('<<ListboxSelect>>', output_select)
+        outputs_listbox.place(x=180, y=100, width=170, height=165)
+        selected_output_entry = tk.Entry(content, textvariable=selected_output_value)
+        selected_output_entry.place(x=180, y=270, width=120, height=25)
+        selected_output_entry.bind("<KeyRelease>", output_edit)
+        add_output_button = tk.Button(content, text="+", command=add_output)
         add_output_button.place(x=300, y=270, width=25, height=25)
-        remove_output_button = tk.Button(content, text="-", command=self.remove_outputs)
+        remove_output_button = tk.Button(content, text="-", command=remove_outputs)
         remove_output_button.place(x=325, y=270, width=25, height=25)
 
         create_node_button = tk.Button(content, text="Create Node", command=compile_node)
         create_node_button.place(x=0, y=310, width=350, height=40)
 
-        self.inputs_listbox.insert(0, '')
-        self.outputs_listbox.insert(0, '')
+        inputs_listbox.insert(0, '')
+        outputs_listbox.insert(0, '')
 
     def edit_node(self):
         if self.edit_node_window:
