@@ -196,6 +196,7 @@ class Node:
         if self.mouse_offset:
             render_rect.x = mouse_pos[0] - self.mouse_offset[0]
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
+        self.xy = render_rect.x, render_rect.y
         tmp = 0
         if self.inputs:
             tmp += node_connection_name_font.size(self.inputs[0].name)[0] + 10
