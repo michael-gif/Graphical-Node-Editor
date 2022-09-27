@@ -259,7 +259,7 @@ class App(tk.Tk):
             inpts = inputs_listbox.get(1, tk.END)
             active = na.ACTIVE_NODE
             active.display_name = name_entry.get()
-            active.description = name_entry.get()
+            active.description = description_entry.get()
             for i in range(len(inpts)):
                 if i < len(active.inputs):
                     active.inputs[i].name = inpts[i]
