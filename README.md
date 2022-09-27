@@ -16,7 +16,7 @@ Run `Node Editor.exe`
 
 # Export settings
 ![Export settings](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/export_settings.png)  
-Check or uncheck each of the attributes to include or exlude them in the exported file
+Check or uncheck each of the attributes to include or exlude them in the exported file  
 Change the name of an attribute to change its name in the exported file
 
 # Building from source code
