@@ -19,7 +19,7 @@ Run `Node Editor.exe`
 - Click the button with the three dots to select a save location
 - Select the export format (only JSON is currently supported)
 - Click on `Export settings` to change the export settings
-- `Export` will export the file to the specified format with the configured export settin
+- `Export` will export the file to the specified format with the configured export settings
 
 # Export settings
 ![Export settings](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/export_settings.png)  
