@@ -579,6 +579,8 @@ class App(tk.Tk):
                     }
                     to_append = {}
                     for key, value in self.export_options.items():
+                        if key not in tmp:
+                            continue
                         if value[1]:
                             to_append[value[0]] = tmp[key]
                     output_nodes.append(to_append)
