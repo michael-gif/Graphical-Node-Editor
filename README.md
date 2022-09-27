@@ -5,7 +5,7 @@ Node editor using PyGame and Tkinter
 Download latest release  
 Run `Node Editor.exe`
 
-# Manual
+# Toolbar
 | Button | Description |
 | ------ | ----------- |
 | ![Exit](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/exit.png) | Exits the application |
