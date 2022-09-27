@@ -446,6 +446,7 @@ class App(tk.Tk):
                 if node.id == end_node_id:
                     end_connector = node.inputs[end_connector_id]
             na.CONNECTION_LIST.append((start_node_id, end_node_id, start_connector, end_connector))
+        na.GRID_ORIGIN = self.winfo_screenwidth() // 2, self.winfo_screenheight() // 2
         self.import_window_open = False
 
     def export_settings(self):
@@ -461,6 +462,7 @@ class App(tk.Tk):
                     self.export_options[key] = (value.get(), True)
                 else:
                     self.export_options[key] = (self.export_options[key][0], False)
+            print(self.export_options)
             self.export_settings_window.destroy()
             self.export_settings_window = None
 
@@ -586,7 +588,7 @@ class App(tk.Tk):
                     output_nodes.append(to_append)
                 output['nodes'] = output_nodes
 
-                if 'connections' not in [opt[0] for opt in self.export_options]:
+                if 'connections' not in self.export_options:
                     f.write(json.dumps(output, indent=4))
                     return
 
@@ -598,7 +600,7 @@ class App(tk.Tk):
                         "start_connector_id": conn[2].id,
                         "end_connector_id": conn[3].id
                     })
-                output['connections'] = output_connections
+                output[self.export_options['connections'][0]] = output_connections
                 f.write(json.dumps(output, indent=4))
 
     def export(self):
