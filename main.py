@@ -10,6 +10,7 @@ import node_api as na
 from sys import exit
 from threading import Thread
 from tkinter.filedialog import asksaveasfilename, askopenfilename
+from tkinter import messagebox
 
 if getattr(sys, 'frozen', False):
     application_path = sys._MEIPASS
@@ -81,18 +82,9 @@ class App(tk.Tk):
         self.export()
 
     def confirm_quit(self):
-        quit_window = tk.Toplevel(self)
-        quit_window.title("Close Application")
-        w, h = 200, 50
-        ws = self.winfo_screenwidth()
-        hs = self.winfo_screenheight()
-        x = (ws / 2) - (w / 2)
-        y = (hs / 2) - (h / 2)
-        quit_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
-        label = tk.Label(quit_window, text="Are you sure you want to quit?")
-        button = tk.Button(quit_window, text="Quit", command=exit)
-        label.pack()
-        button.pack()
+        value = messagebox.askokcancel("Close application", "Are you sure you want to exit?")
+        if value:
+            exit()
 
     def create_new_node(self):
         if self.new_node_window:
@@ -432,29 +424,32 @@ class App(tk.Tk):
             return
         with open(load_path) as f:
             raw_json = json.load(f)
-        na.NODE_LIST = []
-        na.CONNECTION_LIST = []
-        for node in raw_json['nodes']:
-            tmp_node = na.Node(node['name']).set_xy(tuple(node['xy'])).set_description(node['description']).set_id(node['id'])
-            for inpt in node['inputs']:
-                tmp_node.add_input(inpt['name'])
-            for otpt in node['outputs']:
-                tmp_node.add_output(otpt['name'])
-            na.create_node(tmp_node)
-        for conn in raw_json['connections']:
-            start_node_id = int(conn['start_node_id'])
-            end_node_id = int(conn['end_node_id'])
-            start_connector_id = int(conn['start_connector_id'])
-            end_connector_id = int(conn['end_connector_id'])
-            start_connector = None
-            end_connector = None
-            for node in na.NODE_LIST:
-                if node.id == start_node_id:
-                    start_connector = node.outputs[start_connector_id]
-                if node.id == end_node_id:
-                    end_connector = node.inputs[end_connector_id]
-            na.CONNECTION_LIST.append((start_node_id, end_node_id, start_connector, end_connector))
-        na.GRID_ORIGIN = self.winfo_screenwidth() // 2, self.winfo_screenheight() // 2
+        try:
+            na.NODE_LIST = []
+            na.CONNECTION_LIST = []
+            for node in raw_json['nodes']:
+                tmp_node = na.Node(node['name']).set_xy(tuple(node['xy'])).set_description(node['description']).set_id(node['id'])
+                for inpt in node['inputs']:
+                    tmp_node.add_input(inpt['name'])
+                for otpt in node['outputs']:
+                    tmp_node.add_output(otpt['name'])
+                na.create_node(tmp_node)
+            for conn in raw_json['connections']:
+                start_node_id = int(conn['start_node_id'])
+                end_node_id = int(conn['end_node_id'])
+                start_connector_id = int(conn['start_connector_id'])
+                end_connector_id = int(conn['end_connector_id'])
+                start_connector = None
+                end_connector = None
+                for node in na.NODE_LIST:
+                    if node.id == start_node_id:
+                        start_connector = node.outputs[start_connector_id]
+                    if node.id == end_node_id:
+                        end_connector = node.inputs[end_connector_id]
+                na.CONNECTION_LIST.append((start_node_id, end_node_id, start_connector, end_connector))
+            na.GRID_ORIGIN = self.winfo_screenwidth() // 2, self.winfo_screenheight() // 2
+        except ValueError:
+            messagebox.showerror("Error", "Invalid JSON file")
         self.import_window_open = False
 
     def export_settings(self):
@@ -470,7 +465,6 @@ class App(tk.Tk):
                     self.export_options[key] = (value.get(), True)
                 else:
                     self.export_options[key] = (self.export_options[key][0], False)
-            print(self.export_options)
             self.export_settings_window.destroy()
             self.export_settings_window = None
 
