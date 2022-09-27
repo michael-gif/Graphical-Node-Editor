@@ -66,6 +66,7 @@ class Node:
         self.header_height = node_header_font.size(display_name)[1] + 30
 
         self.mouse_offset = None
+        self.grid_offset = None
         self.inputs = []
         self.outputs = []
 
@@ -180,13 +181,17 @@ class Node:
         lines.append(line.strip())
         return lines
 
+    def update_grid_offset(self):
+        self.grid_offset = [GRID_ORIGIN[0] - self.rect[0], GRID_ORIGIN[1] - self.rect[1]]
+
     def render(self):
         render_rect = self.rect
+        mouse_pos = pygame.mouse.get_pos()
+        render_rect.x = GRID_ORIGIN[0] - self.grid_offset[0]
+        render_rect.y = GRID_ORIGIN[1] - self.grid_offset[1]
         if self.mouse_offset:
-            mouse_pos = pygame.mouse.get_pos()
             render_rect.x = mouse_pos[0] - self.mouse_offset[0]
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
-            self.xy = render_rect.x, render_rect.y
         tmp = 0
         if self.inputs:
             tmp += node_connection_name_font.size(self.inputs[0].name)[0] + 10
@@ -262,6 +267,8 @@ ACTIVE_NODE: Node = None
 CONNECTOR_PARENT: Node = None
 CONNECTION_LIST: list = []
 MOUSE_DOWN: bool = False
+GRID_ORIGIN = [0, 0]
+GRID_OFFSET = None
 
 
 def init(screen):
@@ -303,7 +310,9 @@ def process_hitboxes():
 
 
 def update(mouse: tuple):
-    global SELECTED_NODE, SELECTED_CONNECTOR, ACTIVE_NODE, MOUSE_DOWN
+    global SELECTED_NODE, SELECTED_CONNECTOR, ACTIVE_NODE, MOUSE_DOWN, GRID_ORIGIN, GRID_OFFSET
+    for node in NODE_LIST:
+        node.update_grid_offset()
     if mouse[0]:
         if not MOUSE_DOWN:
             MOUSE_DOWN = True
@@ -311,8 +320,14 @@ def update(mouse: tuple):
             if SELECTED_NODE:
                 SELECTED_NODE.attach_to_mouse()
                 ACTIVE_NODE = SELECTED_NODE
+    elif mouse[1]:
+        mouse_pos = pygame.mouse.get_pos()
+        if not GRID_OFFSET:
+            GRID_OFFSET = mouse_pos[0] - GRID_ORIGIN[0], mouse_pos[1] - GRID_ORIGIN[1]
+        GRID_ORIGIN = mouse_pos[0] - GRID_OFFSET[0], mouse_pos[1] - GRID_OFFSET[1]
     else:
         MOUSE_DOWN = False
+        GRID_OFFSET = None
         if SELECTED_NODE:
             SELECTED_NODE.detach_from_mouse()
             SELECTED_NODE = None
@@ -324,11 +339,13 @@ def update(mouse: tuple):
                         connection_element = (CONNECTOR_PARENT.id, node.id, SELECTED_CONNECTOR, conn)
                         if connection_element not in CONNECTION_LIST:
                             CONNECTION_LIST.append(connection_element)
-                            print(CONNECTION_LIST[-1][2].name)
         SELECTED_CONNECTOR = None
 
 
 def render_all():
+    size = PYGAME_SCREEN.get_size()
+    pygame.draw.line(PYGAME_SCREEN, (128, 0, 0), (0, GRID_ORIGIN[1]), (size[0], GRID_ORIGIN[1]))
+    pygame.draw.line(PYGAME_SCREEN, (0, 128, 0), (GRID_ORIGIN[0], 0), (GRID_ORIGIN[0], size[1]))
     for connection in CONNECTION_LIST:
         gfxdraw.bezier(PYGAME_SCREEN, generator_bezier_coords(connection[2].pos, connection[3].pos), 5, (255, 255, 255))
     for node in NODE_LIST:
