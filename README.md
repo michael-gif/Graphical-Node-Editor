@@ -1,4 +1,4 @@
-# Pygame_NodeEditor
+# Graphical Node Editor
 Node editor using PyGame and Tkinter
 
 # Usage
