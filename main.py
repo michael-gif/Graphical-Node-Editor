@@ -42,8 +42,8 @@ class App(tk.Tk):
 
         self.update_idletasks()
 
-        self.export_window_open = False
-        self.export_settings_open = False
+        self.export_window = None
+        self.export_settings = None
         self.import_window_open = False
         self.edit_node_window = None
         self.new_node_window = None
@@ -595,40 +595,41 @@ class App(tk.Tk):
                 f.write(json.dumps(output, indent=4))
 
     def export(self):
-        if self.export_window_open:
+        if self.export_window:
+            self.export_window.focus_set()
+            self.export_window.lift()
             return
-        self.export_window_open = True
 
         def close_export_window():
-            self.export_window_open = False
             self.focus_set()
-            export_window.destroy()
-
-        export_window = tk.Toplevel(self)
-        export_window.title("Export")
-        export_window.protocol("WM_DELETE_WINDOW", close_export_window)
-        w, h = 270, 225
-        ws = self.winfo_screenwidth()
-        hs = self.winfo_screenheight()
-        x = (ws / 2) - (w / 2)
-        y = (hs / 2) - (h / 2)
-        export_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
-
-        selected_format = tk.StringVar(value='json')
+            self.export_window.destroy()
+            self.export_window = None
 
         def browse():
             self.save_path = asksaveasfilename(initialfile=f"untitled.{selected_format.get()}",
                                                defaultextension=f'.{selected_format.get()}',
                                                filetypes=[
                                                    (f'{selected_format.get().upper()}', f'.{selected_format.get()}')])
-            export_window.lift()
+            self.export_window.lift()
             destination_entry.insert(0, self.save_path)
 
         def destruct():
             self.export_to_file(selected_format.get())
             close_export_window()
 
-        content = tk.Frame(export_window, relief='sunken')
+        self.export_window = tk.Toplevel(self)
+        self.export_window.title("Export")
+        self.export_window.protocol("WM_DELETE_WINDOW", close_export_window)
+        w, h = 270, 225
+        ws = self.winfo_screenwidth()
+        hs = self.winfo_screenheight()
+        x = (ws / 2) - (w / 2)
+        y = (hs / 2) - (h / 2)
+        self.export_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
+        selected_format = tk.StringVar(value='json')
+
+        content = tk.Frame(self.export_window, relief='sunken')
         content.place(x=10, y=10, width=250, height=215)
         line_break = tk.Label(content, text="______________________________________________________")
         line_break.place(x=0, y=-5, width=250)
