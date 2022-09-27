@@ -43,7 +43,7 @@ class App(tk.Tk):
         self.update_idletasks()
 
         self.export_window = None
-        self.export_settings = None
+        self.export_settings_window = None
         self.import_window_open = False
         self.edit_node_window = None
         self.new_node_window = None
@@ -445,9 +445,10 @@ class App(tk.Tk):
         self.import_window_open = False
 
     def export_settings(self):
-        if self.export_settings_open:
+        if self.export_settings_window:
+            self.export_settings_window.focus_set()
+            self.export_settings_window.lift()
             return
-        self.export_settings_open = True
         temp_options = {option[0]: None for option in self.export_options.items()}
 
         def close_export_settings():
@@ -456,8 +457,8 @@ class App(tk.Tk):
                     self.export_options[key] = (value.get(), True)
                 else:
                     self.export_options[key] = (self.export_options[key][0], False)
-            self.export_settings_open = False
-            export_settings_window.destroy()
+            self.export_settings_window.destroy()
+            self.export_settings_window = None
 
         def update_export_options(key: str, var: tk.StringVar):
             if temp_options[key]:
@@ -465,17 +466,17 @@ class App(tk.Tk):
             else:
                 temp_options[key] = var
 
-        export_settings_window = tk.Toplevel(self)
-        export_settings_window.title("Export settings")
-        export_settings_window.protocol("WM_DELETE_WINDOW", close_export_settings)
+        self.export_settings_window = tk.Toplevel(self)
+        self.export_settings_window.title("Export settings")
+        self.export_settings_window.protocol("WM_DELETE_WINDOW", close_export_settings)
         w, h = 270, 225
         ws = self.winfo_screenwidth()
         hs = self.winfo_screenheight()
         x = (ws / 2) - (w / 2)
         y = (hs / 2) - (h / 2)
-        export_settings_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+        self.export_settings_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
-        content = tk.Frame(export_settings_window, relief='sunken')
+        content = tk.Frame(self.export_settings_window, relief='sunken')
         content.place(x=10, y=10, width=250, height=215)
 
         attribute_label = tk.Label(content, text='Attributes')
