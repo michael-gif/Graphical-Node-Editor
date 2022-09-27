@@ -2,7 +2,7 @@
 Node editor using PyGame and Tkinter
 
 # Usage
-Download latest release  
+Download latest release https://github.com/michael-gif/Pygame_NodeEditor/releases  
 Run `Node Editor.exe`
 
 # Toolbar
