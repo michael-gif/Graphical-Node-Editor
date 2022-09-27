@@ -256,23 +256,31 @@ class App(tk.Tk):
             self.edit_node_window = None
 
         def save_node():
-            inpts = inputs_listbox.get(1, tk.END)
             active = na.ACTIVE_NODE
             active.display_name = name_entry.get()
             active.description = description_entry.get()
+
+            inpts = inputs_listbox.get(1, tk.END)
             for i in range(len(inpts)):
+                val = inpts[i]
+                if val == '<empty>':
+                    val = ''
                 if i < len(active.inputs):
-                    active.inputs[i].name = inpts[i]
+                    active.inputs[i].name = val
                 else:
-                    active.add_input(inpts[i])
+                    active.add_input(val)
             if len(inpts) < len(active.inputs):
                 active.inputs = active.inputs[:len(inpts)]
+
             otpts = outputs_listbox.get(1, tk.END)
             for i in range(len(otpts)):
+                val = otpts[i]
+                if val == '<empty>':
+                    val = ''
                 if i < len(active.outputs):
-                    active.outputs[i].name = otpts[i]
+                    active.outputs[i].name = val
                 else:
-                    active.add_output(otpts[i])
+                    active.add_output(val)
             if len(otpts) < len(active.outputs):
                 active.outputs = active.outputs[:len(otpts)]
             self.edit_node_window.lift()
@@ -346,7 +354,7 @@ class App(tk.Tk):
                 outputs_listbox.select_set(selection[0])
 
         self.edit_node_window = tk.Toplevel(self)
-        self.edit_node_window.title("Create new node")
+        self.edit_node_window.title("Edit node")
         self.edit_node_window.protocol("WM_DELETE_WINDOW", destruct)
         w, h = 370, 370
         ws = self.winfo_screenwidth()
