@@ -14,6 +14,13 @@ Run `Node Editor.exe`
 | ![Import](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/import.png) | Allows you to import a file |
 | ![Export](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/export.png) | Opents the export dialog |
 
+# Exporting to file
+![Export settings](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/export_dialog.png)  
+Click the button with the three dots to select a save location  
+Select the export format (only JSON is currently supported)  
+Click on `Export settings` to change the export settings  
+`Export` will export the file to the specified format with the configured export settings
+
 # Export settings
 ![Export settings](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/export_settings.png)  
 Check or uncheck each of the attributes to include or exlude them in the exported file  
