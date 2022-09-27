@@ -435,7 +435,7 @@ class App(tk.Tk):
         na.NODE_LIST = []
         na.CONNECTION_LIST = []
         for node in raw_json['nodes']:
-            tmp_node = na.Node(node['name']).set_xy(node['xy']).set_description(node['description']).set_id(node['id'])
+            tmp_node = na.Node(node['name']).set_xy(tuple(node['xy'])).set_description(node['description']).set_id(node['id'])
             for inpt in node['inputs']:
                 tmp_node.add_input(inpt['name'])
             for otpt in node['outputs']:
