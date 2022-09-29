@@ -408,9 +408,15 @@ class App(tk.Tk):
         name_entry.insert(0, na.ACTIVE_NODE.display_name)
         description_entry.insert(0, na.ACTIVE_NODE.description)
         for inpt in na.ACTIVE_NODE.inputs:
-            inputs_listbox.insert(tk.END, inpt.name)
+            if inpt.name == '':
+                inputs_listbox.insert(tk.END, '<empty')
+            else:
+                inputs_listbox.insert(tk.END, inpt.name)
         for otpt in na.ACTIVE_NODE.outputs:
-            outputs_listbox.insert(tk.END, otpt.name)
+            if otpt.name == '':
+                outputs_listbox.insert(tk.END, '<empty')
+            else:
+                outputs_listbox.insert(tk.END, otpt.name)
 
     def import_file(self):
         if self.import_window_open:
