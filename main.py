@@ -241,6 +241,9 @@ class App(tk.Tk):
             self.edit_node_window.focus_set()
             self.edit_node_window.lift()
             return
+        if not na.ACTIVE_NODE:
+            messagebox.showerror("Error", "No node selected!")
+            return
 
         def destruct():
             self.focus_set()
