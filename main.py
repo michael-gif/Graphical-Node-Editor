@@ -1,3 +1,4 @@
+import math
 import os
 import sys
 import pygame
@@ -11,6 +12,7 @@ from sys import exit
 from threading import Thread
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from tkinter import messagebox
+from tkinter import colorchooser
 
 if getattr(sys, 'frozen', False):
     application_path = sys._MEIPASS
@@ -348,10 +350,25 @@ class App(tk.Tk):
                 selected_output_entry.delete(0, tk.END)
                 outputs_listbox.select_set(selection[0])
 
+        def _from_rgb(rgb):
+            """
+            translates an rgb tuple of int to a tkinter friendly color code
+            """
+            r, g, b = rgb
+            return f'#{r:02x}{g:02x}{b:02x}'
+
+        def pick_color():
+            color_code = colorchooser.askcolor(title="Choose header color")
+            rgb = [math.floor(element) for element in color_code[0]]
+            na.ACTIVE_NODE.header_color = rgb
+            header_color_rgb.config(text=f'R: {rgb[0]}, G: {rgb[1]}, B: {rgb[2]}')
+            header_color_sample.config(disabledbackground=_from_rgb(na.ACTIVE_NODE.header_color))
+            self.edit_node_window.lift()
+
         self.edit_node_window = tk.Toplevel(self)
         self.edit_node_window.title("Edit node")
         self.edit_node_window.protocol("WM_DELETE_WINDOW", destruct)
-        w, h = 370, 370
+        w, h = 370, 380
         ws = self.winfo_screenwidth()
         hs = self.winfo_screenheight()
         x = (ws / 2) - (w / 2)
@@ -359,7 +376,7 @@ class App(tk.Tk):
         self.edit_node_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
         content = tk.Frame(self.edit_node_window, relief='sunken')
-        content.place(x=10, y=10, width=350, height=350)
+        content.place(x=10, y=10, width=w - 20, height=h - 20)
 
         name_label = tk.Label(content, text="Display Name", anchor='w')
         name_label.place(x=0, y=0, height=30)
@@ -371,37 +388,47 @@ class App(tk.Tk):
         description_entry = tk.Entry(content)
         description_entry.place(x=125, y=30, width=225, height=25)
 
+        header_color_label = tk.Label(content, text="Header color", anchor='w')
+        header_color_label.place(x=0, y=60, height=30)
+        header_color_rgb = tk.Label(content, text='R: 129, G: 52, B: 75', anchor='w')
+        header_color_rgb.place(x=125, y=60, height=30)
+        header_color_sample = tk.Entry(content, background=_from_rgb(na.ACTIVE_NODE.header_color),
+                                       disabledbackground=_from_rgb(na.ACTIVE_NODE.header_color), state='disabled')
+        header_color_sample.place(x=250, y=62, width=60, height=21)
+        browse_button = tk.Button(content, text='...', command=pick_color)
+        browse_button.place(x=325, y=60, width=25, height=25)
+
         selected_input_value = tk.StringVar()
         selected_output_value = tk.StringVar()
 
         inputs_label = tk.Label(content, text="Inputs")
-        inputs_label.place(x=0, y=75, width=170, height=25)
+        inputs_label.place(x=0, y=105, width=170, height=25)
         inputs_listbox = tk.Listbox(content)
         inputs_listbox.bind('<<ListboxSelect>>', input_select)
-        inputs_listbox.place(x=0, y=100, width=170, height=165)
+        inputs_listbox.place(x=0, y=130, width=170, height=165)
         selected_input_entry = tk.Entry(content, textvariable=selected_input_value)
-        selected_input_entry.place(x=0, y=270, width=120, height=25)
+        selected_input_entry.place(x=0, y=300, width=120, height=25)
         selected_input_entry.bind("<KeyRelease>", input_edit)
         add_input_button = tk.Button(content, text="+", command=add_input)
-        add_input_button.place(x=120, y=270, width=25, height=25)
+        add_input_button.place(x=120, y=300, width=25, height=25)
         remove_input_button = tk.Button(content, text="-", command=remove_inputs)
-        remove_input_button.place(x=145, y=270, width=25, height=25)
+        remove_input_button.place(x=145, y=300, width=25, height=25)
 
         outputs_label = tk.Label(content, text="Outputs")
-        outputs_label.place(x=180, y=75, width=170, height=25)
+        outputs_label.place(x=180, y=105, width=170, height=25)
         outputs_listbox = tk.Listbox(content)
         outputs_listbox.bind('<<ListboxSelect>>', output_select)
-        outputs_listbox.place(x=180, y=100, width=170, height=165)
+        outputs_listbox.place(x=180, y=130, width=170, height=165)
         selected_output_entry = tk.Entry(content, textvariable=selected_output_value)
-        selected_output_entry.place(x=180, y=270, width=120, height=25)
+        selected_output_entry.place(x=180, y=300, width=120, height=25)
         selected_output_entry.bind("<KeyRelease>", output_edit)
         add_output_button = tk.Button(content, text="+", command=add_output)
-        add_output_button.place(x=300, y=270, width=25, height=25)
+        add_output_button.place(x=300, y=300, width=25, height=25)
         remove_output_button = tk.Button(content, text="-", command=remove_outputs)
-        remove_output_button.place(x=325, y=270, width=25, height=25)
+        remove_output_button.place(x=325, y=300, width=25, height=25)
 
         create_node_button = tk.Button(content, text="Save Node", command=save_node)
-        create_node_button.place(x=0, y=310, width=350, height=40)
+        create_node_button.place(x=0, y=340, width=350, height=40)
 
         inputs_listbox.insert(0, '')
         outputs_listbox.insert(0, '')
@@ -437,7 +464,8 @@ class App(tk.Tk):
             na.NODE_LIST = []
             na.CONNECTION_LIST = []
             for node in raw_json['nodes']:
-                tmp_node = na.Node(node['name']).set_xy(tuple(node['xy'])).set_description(node['description']).set_id(node['id'])
+                tmp_node = na.Node(node['name']).set_xy(tuple(node['xy'])).set_description(node['description']).set_id(
+                    node['id'])
                 for inpt in node['inputs']:
                     tmp_node.add_input(inpt['name'])
                 for otpt in node['outputs']:
