@@ -2,6 +2,7 @@ import pygame
 import ctypes
 
 from pygame import gfxdraw
+from events import events
 
 
 class NodeConnector:
@@ -35,17 +36,17 @@ class NodeConnector:
         return line
 
     def render(self):
-        pygame.draw.circle(PYGAME_SCREEN, self.color, self.pos, 5)
+        pygame.draw.circle(Enums.PYGAME_SCREEN, self.color, self.pos, 5)
         if self.type == NodeConnector.INPUT:
-            PYGAME_SCREEN.blit(node_connection_name_font.render(self.get_max_name(), True, self.text_color),
-                               (self.pos[0] + 10, self.pos[1] - 10))
+            Enums.PYGAME_SCREEN.blit(node_connection_name_font.render(self.get_max_name(), True, self.text_color),
+                                     (self.pos[0] + 10, self.pos[1] - 10))
         else:
             output_length = node_connection_name_font.size(self.get_max_name())[0]
-            PYGAME_SCREEN.blit(node_connection_name_font.render(self.get_max_name(), True, self.text_color),
-                               (self.pos[0] - output_length - 10, self.pos[1] - 10))
+            Enums.PYGAME_SCREEN.blit(node_connection_name_font.render(self.get_max_name(), True, self.text_color),
+                                     (self.pos[0] - output_length - 10, self.pos[1] - 10))
 
     def render_hitbox(self):
-        pygame.draw.rect(PYGAME_SCREEN, (255, 0, 0), self.get_hitbox(), 1)
+        pygame.draw.rect(Enums.PYGAME_SCREEN, (255, 0, 0), self.get_hitbox(), 1)
 
     def get_hitbox(self):
         return pygame.Rect(self.pos[0] - 5, self.pos[1] - 5, 10, 10)
@@ -53,7 +54,7 @@ class NodeConnector:
 
 class Node:
     def __init__(self, display_name: str):
-        self.id = len(NODE_LIST)
+        self.id = len(Enums.NODE_LIST)
         self.rect = pygame.Rect(0, 0, 0, 50)
         self.xy = (0, 0)
         self.custom_wh = None
@@ -78,9 +79,9 @@ class Node:
         self.id = id
         return self
 
-    def set_xy(self, xy: tuple):
-        self.xy = xy
-        self.rect.x, self.rect.y = xy
+    def set_xy(self, pos: tuple):
+        self.xy = pos
+        self.rect.x, self.rect.y = pos[0], pos[1]
         return self
 
     def set_wh(self, wh: tuple):
@@ -155,10 +156,10 @@ class Node:
             self.mouse_offset = None
 
     def bring_to_front(self):
-        NODE_LIST.append(NODE_LIST.pop(NODE_LIST.index(self)))
+        Enums.NODE_LIST.append(Enums.NODE_LIST.pop(Enums.NODE_LIST.index(self)))
 
     def send_to_back(self):
-        NODE_LIST.insert(0, NODE_LIST.pop(NODE_LIST.index(self)))
+        Enums.NODE_LIST.insert(0, Enums.NODE_LIST.pop(Enums.NODE_LIST.index(self)))
 
     def get_io_connectors(self):
         return self.inputs + self.outputs
@@ -186,13 +187,13 @@ class Node:
         return lines
 
     def update_grid_offset(self):
-        self.grid_offset = [GRID_ORIGIN[0] - self.rect[0], GRID_ORIGIN[1] - self.rect[1]]
+        self.grid_offset = [Enums.GRID_ORIGIN[0] - self.rect.x, Enums.GRID_ORIGIN[1] - self.rect.y]
 
     def render(self):
         render_rect = self.rect
         mouse_pos = pygame.mouse.get_pos()
-        render_rect.x = GRID_ORIGIN[0] - self.grid_offset[0]
-        render_rect.y = GRID_ORIGIN[1] - self.grid_offset[1]
+        render_rect.x = Enums.GRID_ORIGIN[0] - self.grid_offset[0]
+        render_rect.y = Enums.GRID_ORIGIN[1] - self.grid_offset[1]
         if self.mouse_offset:
             render_rect.x = mouse_pos[0] - self.mouse_offset[0]
             render_rect.y = mouse_pos[1] - self.mouse_offset[1]
@@ -212,20 +213,20 @@ class Node:
         if render_rect.width < 100:
             render_rect.width = 100
         # background rectangle
-        pygame.draw.rect(PYGAME_SCREEN, self.bg_color, render_rect, self.line_width)#, self.border_radius)
+        pygame.draw.rect(Enums.PYGAME_SCREEN, self.bg_color, render_rect, self.line_width)  # , self.border_radius)
         # header rectangle
-        pygame.draw.rect(PYGAME_SCREEN, self.header_color,
-                         (render_rect.x, render_rect.y, render_rect.width, self.header_height), 0)#, 0,
-                         #self.border_radius, self.border_radius, 0, 0)
+        pygame.draw.rect(Enums.PYGAME_SCREEN, self.header_color,
+                         (render_rect.x, render_rect.y, render_rect.width, self.header_height), 0)  # , 0,
+        # self.border_radius, self.border_radius, 0, 0)
         # outline rectangle
-        if ACTIVE_NODE == self:
-            pygame.draw.rect(PYGAME_SCREEN, (217, 152, 22), render_rect, 2)  # , self.border_radius)
+        if Enums.ACTIVE_NODE == self:
+            pygame.draw.rect(Enums.PYGAME_SCREEN, (217, 152, 22), render_rect, 2)  # , self.border_radius)
         else:
-            pygame.draw.rect(PYGAME_SCREEN, (0, 0, 0), render_rect, 2)#, self.border_radius)
+            pygame.draw.rect(Enums.PYGAME_SCREEN, (0, 0, 0), render_rect, 2)  # , self.border_radius)
 
         # display name
         display_text_surface = node_header_font.render(self.display_name, True, self.fg_color)
-        PYGAME_SCREEN.blit(display_text_surface, (
+        Enums.PYGAME_SCREEN.blit(display_text_surface, (
             render_rect[0] + 10, render_rect[1] + (self.header_height - display_text_surface.get_size()[1]) / 2))
 
         # description
@@ -245,7 +246,7 @@ class Node:
             else:
                 line_pos[0] = render_rect.x + 25
                 line_pos[1] = render_rect.y + self.header_height + 25 + (x * line_size[1]) - 10
-            PYGAME_SCREEN.blit(line_text_surface, line_pos)
+            Enums.PYGAME_SCREEN.blit(line_text_surface, line_pos)
 
         # draw all inputs
         for i in range(len(self.inputs)):
@@ -267,25 +268,26 @@ pygame.font.init()
 node_header_font = pygame.font.SysFont("Calibri", 20)
 node_connection_name_font = pygame.font.SysFont("Calibri", 20)
 
-PYGAME_SCREEN: pygame.Surface = None
-NODE_LIST: list = []
-SELECTED_NODE: Node = None
-SELECTED_CONNECTOR: NodeConnector = None
-ACTIVE_NODE: Node = None
-CONNECTOR_PARENT: Node = None
-CONNECTION_LIST: list = []
-MOUSE_DOWN: bool = False
-GRID_ORIGIN = [screensize[0] // 2, screensize[1] // 2]
-GRID_OFFSET = None
+
+class Enums:
+    PYGAME_SCREEN: pygame.Surface = None
+    NODE_LIST: list = []
+    SELECTED_NODE: Node = None
+    SELECTED_CONNECTOR: NodeConnector = None
+    ACTIVE_NODE: Node = None
+    CONNECTOR_PARENT: Node = None
+    CONNECTION_LIST: list = []
+    MOUSE_DOWN: bool = False
+    GRID_ORIGIN: list = [screensize[0] // 2, screensize[1] // 2]
+    GRID_OFFSET: list = None
 
 
 def init(screen):
-    global PYGAME_SCREEN
-    PYGAME_SCREEN = screen
+    Enums.PYGAME_SCREEN = screen
 
 
 def create_node(node: Node):
-    NODE_LIST.append(node)
+    Enums.NODE_LIST.append(node)
 
 
 def generator_bezier_coords(pos1, pos2):
@@ -295,69 +297,80 @@ def generator_bezier_coords(pos1, pos2):
 
 
 def process_hitboxes():
-    global SELECTED_NODE, SELECTED_CONNECTOR, ACTIVE_NODE, CONNECTOR_PARENT
-    if SELECTED_NODE:
+    if Enums.SELECTED_NODE:
         return
     potential_nodes = {}
-    for i in range(len(NODE_LIST)):
-        for connector in NODE_LIST[i].get_io_connectors():
+    for i in range(len(Enums.NODE_LIST)):
+        for connector in Enums.NODE_LIST[i].get_io_connectors():
             if connector.get_hitbox().collidepoint(pygame.mouse.get_pos()):
-                SELECTED_CONNECTOR = connector
-                CONNECTOR_PARENT = NODE_LIST[i]
+                Enums.SELECTED_CONNECTOR = connector
+                Enums.CONNECTOR_PARENT = Enums.NODE_LIST[i]
                 return
-        if NODE_LIST[i].rect.collidepoint(pygame.mouse.get_pos()):
-            potential_nodes[i] = NODE_LIST[i]
+        if Enums.NODE_LIST[i].rect.collidepoint(pygame.mouse.get_pos()):
+            potential_nodes[i] = Enums.NODE_LIST[i]
     if potential_nodes:
         sorted_nodes = [v for k, v in sorted(potential_nodes.items(), key=lambda item: item[0], reverse=True)]
     else:
-        ACTIVE_NODE = None
+        Enums.ACTIVE_NODE = None
         return
-    if not SELECTED_NODE:
-        SELECTED_NODE = sorted_nodes[0]
-        SELECTED_NODE.bring_to_front()
+    if not Enums.SELECTED_NODE:
+        Enums.SELECTED_NODE = sorted_nodes[0]
+        Enums.SELECTED_NODE.bring_to_front()
 
 
 def update(mouse: tuple):
-    global SELECTED_NODE, SELECTED_CONNECTOR, ACTIVE_NODE, MOUSE_DOWN, GRID_ORIGIN, GRID_OFFSET
-    for node in NODE_LIST:
-        node.update_grid_offset()
+    for i in range(events.qsize()):
+        item = events.get()
+        print(type(item))
+        if item == "CLEAR_SCREEN":
+            Enums.NODE_LIST = []
+            Enums.CONNECTION_LIST = []
+        events.task_done()
     if mouse[0]:
-        if not MOUSE_DOWN:
-            MOUSE_DOWN = True
+        if not Enums.MOUSE_DOWN:
+            Enums.MOUSE_DOWN = True
             process_hitboxes()
-            if SELECTED_NODE:
-                SELECTED_NODE.attach_to_mouse()
-                ACTIVE_NODE = SELECTED_NODE
+            if Enums.SELECTED_NODE:
+                Enums.SELECTED_NODE.attach_to_mouse()
+                Enums.ACTIVE_NODE = Enums.SELECTED_NODE
     elif mouse[1]:
         mouse_pos = pygame.mouse.get_pos()
-        if not GRID_OFFSET:
-            GRID_OFFSET = mouse_pos[0] - GRID_ORIGIN[0], mouse_pos[1] - GRID_ORIGIN[1]
-        GRID_ORIGIN = mouse_pos[0] - GRID_OFFSET[0], mouse_pos[1] - GRID_OFFSET[1]
+        if not Enums.GRID_OFFSET:
+            Enums.GRID_OFFSET = mouse_pos[0] - Enums.GRID_ORIGIN[0], mouse_pos[1] - Enums.GRID_ORIGIN[1]
+        Enums.GRID_ORIGIN = mouse_pos[0] - Enums.GRID_OFFSET[0], mouse_pos[1] - Enums.GRID_OFFSET[1]
     else:
-        MOUSE_DOWN = False
-        GRID_OFFSET = None
-        if SELECTED_NODE:
-            SELECTED_NODE.detach_from_mouse()
-            SELECTED_NODE = None
-        if SELECTED_CONNECTOR:
-            for node in NODE_LIST:
-                connectors = node.inputs if SELECTED_CONNECTOR.type == NodeConnector.OUTPUT else node.outputs
+        Enums.MOUSE_DOWN = False
+        Enums.GRID_OFFSET = None
+        if Enums.SELECTED_NODE:
+            Enums.SELECTED_NODE.detach_from_mouse()
+            Enums.SELECTED_NODE = None
+        if Enums.SELECTED_CONNECTOR:
+            for node in Enums.NODE_LIST:
+                connectors = node.inputs if Enums.SELECTED_CONNECTOR.type == NodeConnector.OUTPUT else node.outputs
                 for conn in connectors:
                     if conn.get_hitbox().collidepoint(pygame.mouse.get_pos()):
-                        connection_element = (CONNECTOR_PARENT.id, node.id, SELECTED_CONNECTOR, conn)
-                        if connection_element not in CONNECTION_LIST:
-                            CONNECTION_LIST.append(connection_element)
-        SELECTED_CONNECTOR = None
+                        connection_element = (Enums.CONNECTOR_PARENT.id, node.id, Enums.SELECTED_CONNECTOR, conn)
+                        if connection_element not in Enums.CONNECTION_LIST:
+                            Enums.CONNECTION_LIST.append(connection_element)
+        Enums.SELECTED_CONNECTOR = None
+    for node in Enums.NODE_LIST:
+        node.update_grid_offset()
 
 
 def render_all():
-    size = PYGAME_SCREEN.get_size()
-    pygame.draw.line(PYGAME_SCREEN, (128, 0, 0), (0, GRID_ORIGIN[1]), (size[0], GRID_ORIGIN[1]))
-    pygame.draw.line(PYGAME_SCREEN, (0, 128, 0), (GRID_ORIGIN[0], 0), (GRID_ORIGIN[0], size[1]))
-    for connection in CONNECTION_LIST:
-        gfxdraw.bezier(PYGAME_SCREEN, generator_bezier_coords(connection[2].pos, connection[3].pos), 5, (255, 255, 255))
-    for node in NODE_LIST:
-        node.render()
-    if SELECTED_CONNECTOR:
-        gfxdraw.bezier(PYGAME_SCREEN, generator_bezier_coords(SELECTED_CONNECTOR.pos, pygame.mouse.get_pos()), 5,
+    size = Enums.PYGAME_SCREEN.get_size()
+    pygame.draw.line(Enums.PYGAME_SCREEN, (128, 0, 0), (0, Enums.GRID_ORIGIN[1]), (size[0], Enums.GRID_ORIGIN[1]))
+    pygame.draw.line(Enums.PYGAME_SCREEN, (0, 128, 0), (Enums.GRID_ORIGIN[0], 0), (Enums.GRID_ORIGIN[0], size[1]))
+    for connection in Enums.CONNECTION_LIST:
+        gfxdraw.bezier(Enums.PYGAME_SCREEN, generator_bezier_coords(connection[2].pos, connection[3].pos), 5,
                        (255, 255, 255))
+    for node in Enums.NODE_LIST:
+        node.render()
+    if Enums.SELECTED_CONNECTOR:
+        gfxdraw.bezier(Enums.PYGAME_SCREEN,
+                       generator_bezier_coords(Enums.SELECTED_CONNECTOR.pos, pygame.mouse.get_pos()), 5,
+                       (255, 255, 255))
+
+
+def clear_screen():
+    events.append("CLEAR_SCREEN")

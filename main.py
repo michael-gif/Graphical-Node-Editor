@@ -4,10 +4,12 @@ import sys
 import pygame
 import string
 import json
-
 import tkinter as tk
-import node_api as na
 
+import node_api
+
+from node_api import Enums
+from events import events
 from sys import exit
 from threading import Thread
 from tkinter.filedialog import asksaveasfilename, askopenfilename
@@ -100,7 +102,7 @@ class App(tk.Tk):
             self.new_node_window = None
 
         def compile_node():
-            new_node = na.Node(name_entry.get()).set_description(description_entry.get())
+            new_node = Enums.Node(name_entry.get()).set_description(description_entry.get())
             for inpt in inputs_listbox.get(1, tk.END):
                 if str(inpt) == '<empty>':
                     inpt = ''
@@ -110,7 +112,7 @@ class App(tk.Tk):
                     otpt = ''
                 new_node.add_output(str(otpt))
             new_node.header_color = header_color.get()
-            na.create_node(new_node)
+            Enums.create_node(new_node)
             self.new_node_window.lift()
 
         def input_edit(event):
@@ -270,7 +272,7 @@ class App(tk.Tk):
             self.edit_node_window.focus_set()
             self.edit_node_window.lift()
             return
-        if not na.ACTIVE_NODE:
+        if not Enums.ACTIVE_NODE:
             messagebox.showerror("Error", "No node selected!")
             return
 
@@ -280,7 +282,7 @@ class App(tk.Tk):
             self.edit_node_window = None
 
         def save_node():
-            active = na.ACTIVE_NODE
+            active = Enums.ACTIVE_NODE
             active.display_name = name_entry.get()
             active.description = description_entry.get()
 
@@ -387,7 +389,7 @@ class App(tk.Tk):
         def pick_color():
             color_code = colorchooser.askcolor(title="Choose header color")
             rgb = [math.floor(element) for element in color_code[0]]
-            na.ACTIVE_NODE.header_color = rgb
+            Enums.ACTIVE_NODE.header_color = rgb
             header_color_rgb.config(text=f'R: {rgb[0]}, G: {rgb[1]}, B: {rgb[2]}')
             header_color_sample.config(disabledbackground=_from_rgb(rgb))
             self.edit_node_window.lift()
@@ -419,8 +421,8 @@ class App(tk.Tk):
         header_color_label.place(x=0, y=60, height=30)
         header_color_rgb = tk.Label(content, text='R: 129, G: 52, B: 75', anchor='w')
         header_color_rgb.place(x=125, y=60, height=30)
-        header_color_sample = tk.Entry(content, background=_from_rgb(na.ACTIVE_NODE.header_color),
-                                       disabledbackground=_from_rgb(na.ACTIVE_NODE.header_color), state='disabled')
+        header_color_sample = tk.Entry(content, background=_from_rgb(Enums.ACTIVE_NODE.header_color),
+                                       disabledbackground=_from_rgb(Enums.ACTIVE_NODE.header_color), state='disabled')
         header_color_sample.place(x=250, y=62, width=60, height=21)
         browse_button = tk.Button(content, text='...', command=pick_color)
         browse_button.place(x=325, y=60, width=25, height=25)
@@ -460,16 +462,16 @@ class App(tk.Tk):
         inputs_listbox.insert(0, '')
         outputs_listbox.insert(0, '')
 
-        if not na.ACTIVE_NODE:
+        if not Enums.ACTIVE_NODE:
             return
-        name_entry.insert(0, na.ACTIVE_NODE.display_name)
-        description_entry.insert(0, na.ACTIVE_NODE.description)
-        for inpt in na.ACTIVE_NODE.inputs:
+        name_entry.insert(0, Enums.ACTIVE_NODE.display_name)
+        description_entry.insert(0, Enums.ACTIVE_NODE.description)
+        for inpt in Enums.ACTIVE_NODE.inputs:
             if inpt.name == '':
                 inputs_listbox.insert(tk.END, '<empty')
             else:
                 inputs_listbox.insert(tk.END, inpt.name)
-        for otpt in na.ACTIVE_NODE.outputs:
+        for otpt in Enums.ACTIVE_NODE.outputs:
             if otpt.name == '':
                 outputs_listbox.insert(tk.END, '<empty')
             else:
@@ -488,16 +490,14 @@ class App(tk.Tk):
         with open(load_path) as f:
             raw_json = json.load(f)
         try:
-            na.NODE_LIST = []
-            na.CONNECTION_LIST = []
+            events.put("CLEAR_SCREEN")
             for node in raw_json['nodes']:
-                tmp_node = na.Node(node['name']).set_xy(tuple(node['xy'])).set_description(node['description']).set_id(
-                    node['id'])
+                node_api.create_node(node_api.Node(node['name']))
+                Enums.NODE_LIST[-1].set_xy(tuple(node['xy'])).set_description(node['description']).set_id(node['id'])
                 for inpt in node['inputs']:
-                    tmp_node.add_input(inpt['name'])
+                    Enums.NODE_LIST[-1].add_input(inpt['name'])
                 for otpt in node['outputs']:
-                    tmp_node.add_output(otpt['name'])
-                na.create_node(tmp_node)
+                    Enums.NODE_LIST[-1].add_output(otpt['name'])
             for conn in raw_json['connections']:
                 start_node_id = int(conn['start_node_id'])
                 end_node_id = int(conn['end_node_id'])
@@ -505,13 +505,13 @@ class App(tk.Tk):
                 end_connector_id = int(conn['end_connector_id'])
                 start_connector = None
                 end_connector = None
-                for node in na.NODE_LIST:
+                for node in Enums.NODE_LIST:
                     if node.id == start_node_id:
                         start_connector = node.outputs[start_connector_id]
                     if node.id == end_node_id:
                         end_connector = node.inputs[end_connector_id]
-                na.CONNECTION_LIST.append((start_node_id, end_node_id, start_connector, end_connector))
-            na.GRID_ORIGIN = self.winfo_screenwidth() // 2, self.winfo_screenheight() // 2
+                Enums.CONNECTION_LIST.append((start_node_id, end_node_id, start_connector, end_connector))
+            Enums.GRID_ORIGIN = self.winfo_screenwidth() // 2, self.winfo_screenheight() // 2
         except ValueError:
             messagebox.showerror("Error", "Invalid JSON file")
         self.import_window_open = False
@@ -632,7 +632,7 @@ class App(tk.Tk):
             if file_type == 'json':
                 output = {}
                 output_nodes = []
-                for node in na.NODE_LIST:
+                for node in Enums.NODE_LIST:
                     tmp = {
                         "id": node.id,
                         "name": node.display_name,
@@ -659,7 +659,7 @@ class App(tk.Tk):
                     return
 
                 output_connections = []
-                for conn in na.CONNECTION_LIST:
+                for conn in Enums.CONNECTION_LIST:
                     output_connections.append({
                         "start_node_id": conn[0],
                         "end_node_id": conn[1],
@@ -730,13 +730,13 @@ class App(tk.Tk):
 
 app = App()
 
-screen = pygame.display.set_mode((app.winfo_screenwidth(), app.winfo_screenheight()))
-pygame.display.init()
-pygame.display.update()
-na.init(screen)
-
 
 def pygame_loop():
+    screen = pygame.display.set_mode((app.winfo_screenwidth(), app.winfo_screenheight()))
+    pygame.display.init()
+    pygame.display.update()
+    node_api.init(screen)
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -746,8 +746,8 @@ def pygame_loop():
         screen.fill((34, 34, 34))
 
         mouse = pygame.mouse.get_pressed()
-        na.update(mouse)
-        na.render_all()
+        node_api.update(mouse)
+        node_api.render_all()
 
         pygame.display.update()
     pygame.quit()
