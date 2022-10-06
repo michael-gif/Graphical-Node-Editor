@@ -6,6 +6,11 @@ Node editor using PyGame and Tkinter
 Download latest release https://github.com/michael-gif/Graphical-Node-Editor/releases  
 Run `NodeEditor.exe`
 
+# Requirements
+- Python 3.8
+- Pygame 1.9.6
+- Tkinter (comes with Python)
+
 # Toolbar
 | Button | Description |
 | ------ | ----------- |
@@ -35,8 +40,6 @@ Run `NodeEditor.exe`
   On windows: `C:\..\AppData\Local\Programs\Python\Python38\`
 - Install Pygame 1.9.6 for Python 3.8  
   `python.exe -m pip install -Iv pygame==1.9.6`
-- Install PyAudio for python 3.8  
-  `python.exe -m pip install PyAudio`
 - Go to the folder of the respository
 ### Compiling to exe
 *It doesn't matter whether you use the PyInstaller scripts or the py2exe scripts, just pick one*
@@ -51,6 +54,6 @@ Run `NodeEditor.exe`
 - Download InnoSetup https://jrsoftware.org/isdl.php  
   (Direct link to exe: https://jrsoftware.org/download.php/is.exe?site=1)
 - Install InnoSetup
-- Open `.\innosetup\installer_script.iss` in InnoSetup
+- Open `.\installer\installer_script.iss` in InnoSetup
 - Go to `Build > Compile` and wait
-- The installer will be located at `.\innosetup\compile output\nodeeditor_setup.exe`
+- The installer will be located at `.\installer\nodeeditor_setup.exe`
