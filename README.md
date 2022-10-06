@@ -51,6 +51,7 @@ Run `NodeEditor.exe`
   - py2exe: `build_py2exe_onefile.bat`
 
 # Building the installer
+- The installer is automatically built for you when you build the app exe, and is located in the `installer` directory as `nodeeditor_setup.py`
 - Download InnoSetup https://jrsoftware.org/isdl.php  
   (Direct link to exe: https://jrsoftware.org/download.php/is.exe?site=1)
 - Install InnoSetup
