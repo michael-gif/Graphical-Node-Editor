@@ -56,7 +56,7 @@ However if you want to build the installer youself:
 - Download InnoSetup https://jrsoftware.org/isdl.php  
   (Direct link to exe: https://jrsoftware.org/download.php/is.exe?site=1)
 - Install InnoSetup
-- Navigate to the `installer` directory
+- Navigate to the `installer` directory in this repo
 ### Method 1
 - Run `build_installer.ps1` from PowerShell, passing the name of the `.iss` script you want to use  
 - For example, if you used `build_pyinstaller_onefile.bat`, then you would pass `installer_pyinstaller_onefile.iss` to the PowerShell script.  
