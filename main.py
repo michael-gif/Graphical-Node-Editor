@@ -16,7 +16,7 @@ from tkinter.filedialog import asksaveasfilename, askopenfilename
 from tkinter import messagebox
 from tkinter import colorchooser
 
-# check if app is being compiled with PyInstaller or Py2Exe
+# check if app is being compiled with PyInstaller or py2exe
 if hasattr(sys, '_MEIPASS'):
     if getattr(sys, 'frozen', False):
         application_path = sys._MEIPASS
