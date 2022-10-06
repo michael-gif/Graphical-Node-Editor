@@ -1,5 +1,6 @@
 # Graphical Node Editor
-Node editor using PyGame and Tkinter
+Node editor using PyGame and Tkinter  
+![Example](https://github.com/michael-gif/Graphical-Node-Editor/blob/main/docs/example.png)
 
 # Usage
 Download latest release https://github.com/michael-gif/Graphical-Node-Editor/releases  
