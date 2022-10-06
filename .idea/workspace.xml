@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ca960ab7-5f97-45f3-882b-c50f48ece29c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/innosetup/compile output/nodeeditor_setup.exe" beforeDir="false" afterPath="$PROJECT_DIR$/innosetup/compile output/nodeeditor_setup.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/innosetup/installer_script.iss" beforeDir="false" afterPath="$PROJECT_DIR$/innosetup/installer_script.iss" afterDir="false" />
-    </list>
+    <list default="true" id="ca960ab7-5f97-45f3-882b-c50f48ece29c" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

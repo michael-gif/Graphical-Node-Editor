@@ -16,7 +16,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\innosetup\compile output
+OutputDir=C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\innosetup
 OutputBaseFilename=nodeeditor_setup
 SetupIconFile=C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\icon.ico
 Compression=lzma
