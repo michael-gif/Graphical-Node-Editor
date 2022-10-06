@@ -8,7 +8,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{5B680602-960F-47E9-8795-89024A20AD6A}
+AppId={{61DB00C3-2644-4924-909F-AAC48F6D46EB}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -19,7 +19,7 @@ DisableWelcomePage=no
 ;PrivilegesRequired=lowest
 OutputDir=C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\installer
 OutputBaseFilename=nodeeditor_setup
-SetupIconFile=C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\icon.ico
+SetupIconFile=C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -32,17 +32,6 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\libcrypto-1_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\libffi-7.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\libssl-1_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\NodeEditor.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\SDL_image.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\SDL_mixer.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\SDL_ttf.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\tcl86t.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\tk86t.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Michael Franco\Documents\Python Scripts\- github\Graphical Node Editor\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

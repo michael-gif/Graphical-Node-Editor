@@ -13,5 +13,5 @@ echo Build complete!
 echo EXE location: ./dist/NodeEditor.exe
 
 echo Building installer
-powershell -ExecutionPolicy Bypass -File .\installer\build_installer.ps1 .\installer\installer_py2exe_onefile.iss
+powershell -ExecutionPolicy Bypass -File .\installer\build_installer.ps1
 echo Build complete!

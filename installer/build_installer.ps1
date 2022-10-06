@@ -9,8 +9,8 @@ ForEach ($i in $arr) {
         break
     }
 }
-write-host $args[0]
+
+Write-Host $installationDirectory
 if ($installationDirectory -ne $null) {
-    $installationScript = $args[0]
-    & "$installationDirectory\iscc.exe" $installationScript
+	& "$installationDirectory\iscc.exe" ".\installer\installer_script.iss"
 }
