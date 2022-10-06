@@ -28,7 +28,6 @@ else:
 # get icon to show in taskbar
 try:
     from ctypes import windll
-
     app_id = 'blah.blah.blah.blah'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
 except ImportError:
