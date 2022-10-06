@@ -54,6 +54,8 @@ Run `NodeEditor.exe`
 - Download InnoSetup https://jrsoftware.org/isdl.php  
   (Direct link to exe: https://jrsoftware.org/download.php/is.exe?site=1)
 - Install InnoSetup
-- Open `.\installer\installer_script.iss` in InnoSetup
+- Open one of the scripts in `.\installer` in Inno Setup Compiler, making sure the name corresponds to the build script you used to generate the appp exe.  
+  For example, if you used `build_pyinstaller_onefile.bat`, then you would open `installer_pyinstaller_onefile.iss`.  
+  Whereas if you used `build_py2exe.bat`, then you would open `installer_py2exe.iss`.
 - Go to `Build > Compile` and wait
 - The installer will be located at `.\installer\nodeeditor_setup.exe`
