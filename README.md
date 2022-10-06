@@ -58,13 +58,9 @@ However if you want to build the installer youself:
 - Install InnoSetup
 - Navigate to the `installer` directory in this repo
 ### Method 1
-- Run `build_installer.ps1` from PowerShell, passing the name of the `.iss` script you want to use  
-- For example, if you used `build_pyinstaller_onefile.bat`, then you would pass `installer_pyinstaller_onefile.iss` to the PowerShell script.  
-  Whereas if you used `build_py2exe.bat`, then you would pass `installer_py2exe.iss` to the PowerShell script.
+- Run `build_installer.ps1` from PowerShell
 - You will end up with `nodeeditor_setup.exe` in the `installer` folder
 ### Method 2
-- Open one of the scripts in the `installer` directory in Inno Setup Compiler, making sure the name of the script corresponds to the build script you used to generate the app exe.  
-  For example, if you used `build_pyinstaller_onefile.bat`, then you would open `installer_pyinstaller_onefile.iss`.  
-  Whereas if you used `build_py2exe.bat`, then you would open `installer_py2exe.iss`.
+- Open `installer_script.iss` in Inno Setup Compiler, making sure the name of the script corresponds to the build script you used to generate the app exe.  
 - Go to `Build > Compile` and wait for installer to compile
 - You will end up with `nodeeditor_setup.exe` in the `installer` folder
