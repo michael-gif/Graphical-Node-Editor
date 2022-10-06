@@ -16,12 +16,14 @@ from tkinter.filedialog import asksaveasfilename, askopenfilename
 from tkinter import messagebox
 from tkinter import colorchooser
 
-if getattr(sys, 'frozen', False):
-    application_path = sys._MEIPASS
-elif __file__:
-    application_path = os.path.dirname(__file__)
-
-icon_file = 'icon.ico'
+# check if app is being compiled with PyInstaller or Py2Exe
+if hasattr(sys, '_MEIPASS'):
+    if getattr(sys, 'frozen', False):
+        application_path = sys._MEIPASS
+    elif __file__:
+        application_path = os.path.dirname(__file__)
+else:
+    application_path = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 # get icon to show in taskbar
 try:
@@ -31,6 +33,7 @@ try:
 except ImportError:
     pass
 
+icon_file = 'icon.ico'
 
 class App(tk.Tk):
     def __init__(self):

@@ -9,7 +9,7 @@ ren main.exe "NodeEditor.exe"
 
 echo Cleaning up
 del /f main.spec
-rmdir /S /Q build
-rmdir /S /Q dist
+rem rmdir /S /Q build
+rem rmdir /S /Q dist
 
 pause
