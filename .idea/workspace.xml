@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ca960ab7-5f97-45f3-882b-c50f48ece29c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/build_pyinstaller.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build_pyinstaller.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build_pyinstaller_onefile.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build_pyinstaller_onefile.bat" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

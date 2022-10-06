@@ -4,6 +4,8 @@ import py2exe
 setup(
     options={
         'py2exe': {
+            'bundle_files': 1,
+            'compressed': True,
             'includes': ['tkinter', 'pygame']
         }
     },
@@ -13,5 +15,6 @@ setup(
             'icon_resources': [(1, 'icon.ico')],
             'dest_base': 'NodeEditor'
         }
-    ]
+    ],
+    zipfile=None
 )
