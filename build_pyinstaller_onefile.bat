@@ -12,3 +12,7 @@ del /f "NodeEditor.spec"
 rmdir /S /Q "build"
 echo Build complete!
 echo EXE location: ./dist/NodeEditor.exe
+
+echo Building installer
+powershell -ExecutionPolicy Bypass -File .\installer\build_installer.ps1 .\installer\installer_pyinstaller_onefile.iss
+echo Build complete!
