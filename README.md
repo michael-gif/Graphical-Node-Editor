@@ -51,12 +51,20 @@ Run `NodeEditor.exe`
   - py2exe: `build_py2exe_onefile.bat`
 
 # Building the installer
-- The installer is automatically built for you when you build the app exe, and is located in the `installer` directory as `nodeeditor_setup.py`
+The installer is automatically built for you when you build `NodeEditor.exe`, and is located in the `installer` directory as `nodeeditor_setup.exe`  
+However if you want to build the installer youself:  
 - Download InnoSetup https://jrsoftware.org/isdl.php  
   (Direct link to exe: https://jrsoftware.org/download.php/is.exe?site=1)
 - Install InnoSetup
-- Open one of the scripts in `.\installer` in Inno Setup Compiler, making sure the name of the script corresponds to the build script you used to generate the appp exe.  
+- Navigate to the `installer` directory
+### Method 1
+- Run `build_installer.ps1` from PowerShell, passing the name of the `.iss` script you want to use  
+- For example, if you used `build_pyinstaller_onefile.bat`, then you would pass `installer_pyinstaller_onefile.iss` to the PowerShell script.  
+  Whereas if you used `build_py2exe.bat`, then you would pass `installer_py2exe.iss` to the PowerShell script.
+- You will end up with `nodeeditor_setup.exe` in the `installer` folder
+### Method 2
+- Open one of the scripts in the `installer` directory in Inno Setup Compiler, making sure the name of the script corresponds to the build script you used to generate the app exe.  
   For example, if you used `build_pyinstaller_onefile.bat`, then you would open `installer_pyinstaller_onefile.iss`.  
   Whereas if you used `build_py2exe.bat`, then you would open `installer_py2exe.iss`.
 - Go to `Build > Compile` and wait for installer to compile
-- The installer will be located at `.\installer\nodeeditor_setup.exe`
+- You will end up with `nodeeditor_setup.exe` in the `installer` folder
