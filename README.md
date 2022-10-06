@@ -54,6 +54,6 @@ Run `NodeEditor.exe`
 - Download InnoSetup https://jrsoftware.org/isdl.php  
   (Direct link to exe: https://jrsoftware.org/download.php/is.exe?site=1)
 - Install InnoSetup
-- Open `.\innosetup\installer_script.iss` in InnoSetup
+- Open `.\installer\installer_script.iss` in InnoSetup
 - Go to `Build > Compile` and wait
-- The installer will be located at `.\innosetup\compile output\nodeeditor_setup.exe`
+- The installer will be located at `.\installer\nodeeditor_setup.exe`
