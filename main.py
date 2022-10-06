@@ -114,7 +114,7 @@ class App(tk.Tk):
             self.new_node_window = None
 
         def compile_node():
-            new_node = Enums.Node(name_entry.get()).set_description(description_entry.get())
+            new_node = node_api.Node(name_entry.get()).set_description(description_entry.get())
             for inpt in inputs_listbox.get(1, tk.END):
                 if str(inpt) == '<empty>':
                     inpt = ''
@@ -124,7 +124,7 @@ class App(tk.Tk):
                     otpt = ''
                 new_node.add_output(str(otpt))
             new_node.header_color = header_color.get()
-            Enums.create_node(new_node)
+            node_api.create_node(new_node)
             self.new_node_window.lift()
 
         def input_edit(event):
