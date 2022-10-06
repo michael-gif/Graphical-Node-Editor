@@ -2,27 +2,27 @@
 Node editor using PyGame and Tkinter
 
 # Usage
-Download latest release https://github.com/michael-gif/Pygame_NodeEditor/releases  
+Download latest release https://github.com/michael-gif/Graphical-Node-Editor/releases  
 Run `NodeEditor.exe`
 
 # Toolbar
 | Button | Description |
 | ------ | ----------- |
-| ![Exit](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/exit.png) | Exits the application |
-| ![New Node](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/new_node.png) | Opens the create node dialog |
-| ![Edit Node](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/edit_node.png) | Opens the edit node dialog |
-| ![Import](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/import.png) | Allows you to import a file |
-| ![Export](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/export.png) | Opents the export dialog |
+| ![Exit](https://github.com/michael-gif/Graphical-Node-Editor/blob/main/docs/exit.png) | Exits the application |
+| ![New Node](https://github.com/michael-gif/Graphical-Node-Editor/blob/main/docs/new_node.png) | Opens the create node dialog |
+| ![Edit Node](https://github.com/michael-gif/Graphical-Node-Editor/blob/main/docs/edit_node.png) | Opens the edit node dialog |
+| ![Import](https://github.com/michael-gif/Graphical-Node-Editor/blob/main/docs/import.png) | Allows you to import a file |
+| ![Export](https://github.com/michael-gif/Graphical-Node-Editor/blob/main/docs/export.png) | Opents the export dialog |
 
 # Export node tree to a file
-![Export settings](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/export_dialog.png)  
+![Export settings](https://github.com/michael-gif/Graphical-Node-Editor/blob/main/docs/export_dialog.png)  
 - Click the button with the three dots to select a save location
 - Select the export format (only JSON is currently supported)
 - Click on `Export settings` to change the export settings
 - `Export` will export the file to the specified format with the configured export settings
 
 # Export settings
-![Export settings](https://github.com/michael-gif/Pygame_NodeEditor/blob/main/docs/export_settings.png)  
+![Export settings](https://github.com/michael-gif/Graphical-Node-Editor/blob/main/docs/export_settings.png)  
 - Check or uncheck each of the attributes to include or exlude them in the exported file
 - Change the name of an attribute to change its name in the exported file
 
@@ -37,4 +37,19 @@ Run `NodeEditor.exe`
 - Install PyAudio for python 3.8  
   `python.exe -m pip install PyAudio`
 - Go to the folder of the respository
-- Run `build.bat`
+### Compiling to exe
+*It doesn't matter whether you use the PyInstaller scripts or the py2exe scripts, just pick one*
+- Standard compilation
+  - PyInstaller: `build_pyinstaller.bat`  
+  - py2exe: `build_py2exe.bat`
+- Minimal file compilation
+  - PyInstaller: `build_pyinstaller_onefile.bat`
+  - py2exe: `build_py2exe_onefile.bat`
+
+# Building the installer
+- Download InnoSetup https://jrsoftware.org/isdl.php  
+  (Direct link to exe: https://jrsoftware.org/download.php/is.exe?site=1)
+- Install InnoSetup
+- Open `.\innosetup\installer_script.iss` in InnoSetup
+- Go to `Build > Compile` and wait
+- The installer will be located at `.\innosetup\compile output\nodeeditor_setup.exe`
