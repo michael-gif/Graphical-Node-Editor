@@ -4,7 +4,7 @@ Node editor using PyGame and Tkinter
 
 # Usage
 Download latest release https://github.com/michael-gif/Graphical-Node-Editor/releases  
-Run `NodeEditor.exe`
+Run the installer `nodeeditor_setup.exe`
 
 # Requirements
 - Python 3.8
